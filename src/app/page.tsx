@@ -61,7 +61,84 @@ function LoginView() {
       </Card>
     </main>
   );
+}
 
+function LandingPage() {
+  const { loginWithGoogle } = useAuth();
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
+      {/* Hero Section */}
+      <header className="flex flex-col items-center justify-center py-20 px-4 text-center">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-blue-700 mb-4">UrFriends!</h1>
+        <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">Create and nurture relationships with the people who matter to you.</p>
+        <div className="flex flex-row gap-4 justify-center">
+          <a href="#pricing" className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg shadow hover:bg-blue-700 transition font-semibold">Get Started</a>
+          <button onClick={loginWithGoogle} className="inline-block bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg shadow hover:bg-blue-50 transition font-semibold">Login</button>
+        </div>
+      </header>
+
+      {/* Features Section */}
+      <section className="py-16 px-4 bg-white">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-10">Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="bg-blue-50 p-6 rounded-lg shadow text-center">
+            <div className="mb-4 text-blue-600">
+              <svg className="mx-auto h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3" /></svg>
+            </div>
+            <h3 className="font-semibold text-xl mb-2">Custom Reminders</h3>
+            <p className="text-gray-600">Sort your relationships into groups, and assign timeframes. Never forget to check in again.</p>
+          </div>
+          <div className="bg-blue-50 p-6 rounded-lg shadow text-center">
+            <div className="mb-4 text-blue-600">
+              <svg className="mx-auto h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+            </div>
+            <h3 className="font-semibold text-xl mb-2">Help With Initiation</h3>
+            <p className="text-gray-600">AI tools that help with building relationships</p>
+          </div>
+          <div className="bg-blue-50 p-6 rounded-lg shadow text-center">
+            <div className="mb-4 text-blue-600">
+              <svg className="mx-auto h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <h3 className="font-semibold text-xl mb-2">Secure & Reliable</h3>
+            <p className="text-gray-600">Your sensitive data is secure and protected. We're here to foster your relationships.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-16 px-4 bg-blue-50">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-10">Pricing</h2>
+        <div className="flex flex-col md:flex-row justify-center gap-8 max-w-4xl mx-auto">
+          <div className="bg-white p-8 rounded-lg shadow text-center flex-1">
+            <h3 className="font-semibold text-xl mb-2">Starter</h3>
+            <p className="text-4xl font-bold text-blue-600 mb-4">Free<span className="text-base font-normal"></span></p>
+            <ul className="mb-6 text-gray-600">
+              <li>15 Premium Contacts (Unlimited Conversations)</li>
+              <li>100 Standard Contacts (10 Conversations)</li>
+              <li>10 Tiers</li>
+            </ul>
+            <a href="#" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Create Account</a>
+          </div>
+          <div className="bg-white p-8 rounded-lg shadow text-center flex-1 border-2 border-blue-600">
+            <h3 className="font-semibold text-xl mb-2">Pro</h3>
+            <p className="text-4xl font-bold text-blue-600 mb-4">$9<span className="text-base font-normal">/mo</span></p>
+            <ul className="mb-6 text-gray-600">
+              <li>Unlimited Premium Contacts</li>
+              <li>AI Tools</li>
+              <li>Calendar Integration</li>
+              <li>Unlimited Tiers</li>
+            </ul>
+            <a href="#" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Choose Pro</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Section */}
+      <footer className="mt-auto py-8 bg-white border-t text-center text-gray-500">
+        &copy; {new Date().getFullYear()} UrFriends! All rights reserved.
+      </footer>
+    </div>
+  )
 }
 
 const createUserAccount = async (userID: string) => {
@@ -275,5 +352,5 @@ export default function Home() {
         <DashboardView />
       </Provider>
     </QueryClientProvider>
-    : <LoginView />;
+    : <LandingPage />;
 }
