@@ -59,6 +59,7 @@ const ReachOut = (props: ReachOut__Props) => {
   return (
     <>
       <form onSubmit={(event) => submitNewConversation(event)}>
+        <label className="block" htmlFor="date">Date</label>
         <input
           onChange={(event) => setConversationDate(event.target.value)}
           value={conversationDate}
@@ -66,6 +67,7 @@ const ReachOut = (props: ReachOut__Props) => {
           name="date"
         ></input>
         <br />
+        <label className="block" htmlFor="date">Topic</label>
         <textarea
           // rows="15"
           style={{ width: "100%", resize: "none", overflow: "hidden" }}
