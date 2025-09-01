@@ -18,21 +18,24 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 flex flex-col gap-6">
         <h1 className="text-2xl font-bold text-center mb-2">Sign in to UrFriends!</h1>
+        <p className="text-center">Google is currently the only login method</p>
         <form className="flex flex-col gap-4">
           <input
+            disabled
             type="email"
             placeholder="Email"
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
+            disabled
             type="password"
             placeholder="Password"
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button
+          <button disabled
             type="submit"
-            className="bg-blue-700 text-white rounded-lg px-4 py-2 font-semibold hover:bg-blue-800 transition"
-          >
+            className=" bg-gray-300 text-white rounded-lg px-4 py-2 font-semibold  transition "
+          > {/* bg-blue-700 hover:bg-blue-800 hover:bg-blue-800*/}
             Sign In
           </button>
         </form>
@@ -42,7 +45,7 @@ export default function LoginPage() {
           <hr className="flex-1 border-gray-300" />
         </div>
         <div className="flex flex-col gap-3">
-          <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 font-semibold hover:bg-gray-50 transition">
+          <button disabled className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 font-semibold transition bg-gray-300"> {/* hover:bg-gray-50 */}
             {/* Microsoft Icon Placeholder */}
             <span className="bg-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-white font-bold text-xs">M</span>
             Continue with Microsoft
@@ -52,7 +55,7 @@ export default function LoginPage() {
             <span className="bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-white font-bold text-xs">G</span>
             Continue with Google
           </button>
-          <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 font-semibold hover:bg-gray-50 transition">
+          <button disabled className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 font-semibold transition bg-gray-300"> {/* hover:bg-gray-50 */}
             {/* Apple Icon Placeholder */}
             <span className="bg-black rounded-full w-5 h-5 flex items-center justify-center text-white font-bold text-xs"></span>
             Continue with Apple
