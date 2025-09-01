@@ -113,6 +113,7 @@ function LandingPage() {
             <h3 className="font-semibold text-xl mb-2">Starter</h3>
             <p className="text-4xl font-bold text-blue-600 mb-4">Free<span className="text-base font-normal"></span></p>
             <ul className="mb-6 text-gray-600">
+              <li className="font-bold">DURING DEV ALL FEATURES ARE FREE</li>
               <li>15 Premium Contacts (Unlimited Conversations)</li>
               <li>100 Standard Contacts (10 Conversations)</li>
               <li>10 Tiers</li>
@@ -123,12 +124,13 @@ function LandingPage() {
             <h3 className="font-semibold text-xl mb-2">Pro</h3>
             <p className="text-4xl font-bold text-blue-600 mb-4">$9<span className="text-base font-normal">/mo</span></p>
             <ul className="mb-6 text-gray-600">
+              <li className="font-bold">DURING DEV ALL FEATURES ARE FREE</li>
               <li>Unlimited Premium Contacts</li>
               <li>AI Tools</li>
               <li>Calendar Integration</li>
               <li>Unlimited Tiers</li>
             </ul>
-            <a href="#" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Choose Pro</a>
+            <button disabled className="bg-blue-300 text-white px-6 py-2 rounded cursor-not-allowed opacity-60">Choose Pro</button>
           </div>
         </div>
       </section>
