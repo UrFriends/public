@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks/use-app-selector";
 import { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -70,7 +71,7 @@ const ReachOut = (props: ReachOut__Props) => {
           style={{ width: "100%", resize: "none", overflow: "hidden" }}
           name="conversation"
         ></textarea>
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
       </form>
     </>
   );

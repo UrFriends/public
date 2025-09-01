@@ -104,13 +104,13 @@ const ConversationDetails = (props: any) => {
       <div className="conv-details-conv-render">{(conversation && conversation.topic) ? conversation.topic : ""}</div>
       <div className="conv-details-conv-render">{(conversation && conversation.date) ? conversation.date : ""}</div>
       {!editConvo && (
-        <button onClick={handleToggleEditConvo}>Edit Conversation</button>
+        <Button onClick={handleToggleEditConvo}>Edit Conversation</Button>
       )}
       {editConvo && (
         <>
-          <button onClick={saveConversation}>Save</button>
+          <Button onClick={saveConversation}>Save</Button>
           <br />
-          <button onClick={cancelChangeConversaton}>Cancel</button>
+          <Button onClick={cancelChangeConversaton}>Cancel</Button>
         </>
       )}
       {!showConfirm && <>
