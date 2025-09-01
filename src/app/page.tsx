@@ -121,7 +121,7 @@ function LandingPage() {
               <li>100 Standard Contacts (10 Conversations)</li>
               <li>10 Tiers</li>
             </ul>
-            <a href="#" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Create Account</a>
+            <Button onClick={() => router.push("/login")} className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Create Account</Button>
           </div>
           <div className="bg-white p-8 rounded-lg shadow text-center flex-1 border-2 border-blue-600">
             <h3 className="font-semibold text-xl mb-2">Pro</h3>
