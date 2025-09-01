@@ -64,6 +64,7 @@ function LoginView() {
 }
 
 function LandingPage() {
+  const { loginWithGoogle } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
       {/* Hero Section */}
@@ -72,7 +73,7 @@ function LandingPage() {
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">Create and nurture relationships with the people who matter to you.</p>
         <div className="flex flex-row gap-4 justify-center">
           <a href="#pricing" className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg shadow hover:bg-blue-700 transition font-semibold">Get Started</a>
-          <a className="inline-block bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg shadow hover:bg-blue-50 transition font-semibold">Login</a>
+          <button onClick={loginWithGoogle} className="inline-block bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg shadow hover:bg-blue-50 transition font-semibold">Login</button>
         </div>
       </header>
 
