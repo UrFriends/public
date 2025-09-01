@@ -1,0 +1,957 @@
+:root {
+  /*This sets the standard font color*/
+  --base-high-cont-color: rgb(45, 4, 4);
+  --base-high-cont-hover: rgb(72, 11, 11);
+  --base-high-cont-color-hover-xtra: rgba(45, 4, 4, 0.5);
+  --light-base-color: bisque;
+  --light-base-hover: rgb(244, 208, 165);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+//COLOR FOR CONTACT CARD CSS GRID LAYOUT
+
+.conversation-list {
+  background-color: lightblue;
+}
+
+.conv-btn-date-span {
+  background-color: red;
+}
+.conv-btn-conv-span {
+  background-color: green;
+}
+
+.recent-contact-status-div {
+  background-color: blue;
+}
+
+.contact-expanded-action-buttons {
+  background-color: blue;
+}
+
+.contact-expanded-recent-convos {
+  background-color: green;
+}
+
+.contact-expanded-button-div {
+  background-color: yellow;
+}
+
+.contact-expanded-name-phone-email {
+}
+
+.contact-name-and-last-cont-div {
+  background-color: pink;
+}
+
+.last-convo-topic {
+  background-color: lime;
+}
+
+.contact-action-btns {
+  background-color: blueviolet;
+}
+
+.recent-contact-status-div {
+  background-color: blue;
+}
+
+.act-btn-1 {
+  background-color: green;
+}
+.act-btn-2 {
+  background-color: pink;
+}
+.act-btn-3 {
+  background-color: yellow;
+}
+.act-btn-4 {
+  background-color: orange;
+}
+
+.modal-top-bar {
+  background-color: red;
+}
+
+.side-menu-grid-elem2 {
+  background-color: pink;
+}
+
+.side-menu-grid-elem3 {
+  background-color: green;
+}
+
+.side-menu-grid-elem4 {
+  background-color: yellow;
+}
+
+.side-menu-grid-elem5 {
+  background-color: purple;
+}
+
+.side-menu-grid-elem6 {
+ background-color: blue;
+}
+
+*/
+
+/* Standard Elements */
+body {
+  background-color: white;
+}
+/* (Close)Standard Elements */
+
+/*Large Desktop specific*/
+@media (min-width: 1100px) {
+  .styled-grid-form {
+    /*change this for mobile/desktop*/
+    width: 500px;
+  }
+
+  /*change this for mobile/desktop*/
+  .styled-grid-form-container {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.link-bar-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+
+
+
+/* Classes */
+.tier-container {
+  background-color: var(--base-high-cont-color);
+  padding: 0.2em;
+  margin: 1em;
+  display: flex;
+  color: var(--light-base-color);
+  cursor: pointer;
+}
+
+.tier-container:hover {
+  background-color: var(--base-high-cont-hover);
+}
+
+.tier-settings-btn {
+  border-radius: 50%;
+  color: var(--base-high-cont-color);
+  font-size: 1.2em;
+  height: 2rem;
+  width: 2rem;
+  background-color: var(--light-base-color);
+  border: none;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.tier-settings-btn:hover {
+  background-color: var(--light-base-hover);
+}
+
+.expand-collapse-div {
+  color: var(--light-base-color);
+  height: 2em;
+  width: 2em;
+  margin: 2px;
+  padding: 0.5em;
+}
+
+.expand-collapse-span {
+  width: 5%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.tier-title-span {
+  font-size: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 80%;
+}
+
+.tier-settings-span {
+  width: 15%;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+/*The following elements pertain to contents of a contact card. CSS grid and styling properties for DESKTOP view*/
+.contact-card {
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), -2px 3px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--light-base-color);
+  margin: 0.5rem 2rem 0.5rem 2rem;
+  padding: 1.2rem;
+  /*CSS Grid settings for contained elements*/
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.contact-card:hover {
+  background-color: var(--light-base-hover);
+  cursor: pointer;
+}
+
+.contact-card-expanded {
+  align-items: start;
+  background-color: pink;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), -2px 3px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--light-base-color);
+  margin: 0.5rem 2rem 0.5rem 2rem;
+  padding: 1.2rem;
+  /*CSS Grid settings for contained elements*/
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, auto);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.contact-expanded-recent-convos {
+  grid-area: 2 / 1 / 2 / 3;
+}
+
+.contact-expanded-button-div {
+  grid-area: 4 / 1 / 5 / 5;
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.contact-expanded-name-phone-email {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  /*This is related to the larger, containing grid*/
+  grid-area: 1 / 1 / 1 / 5;
+}
+
+.ce-name {
+  grid-area: 1 / 1 / 3 / 2;
+  font-size: 2em;
+}
+
+.ce-number {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.ce-email {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+.contact-name-and-last-cont-div {
+  grid-area: 1 / 2 / 2 / 4;
+}
+
+.contact-name,
+.last-contact,
+.last-convo-topic,
+.contact-action-btns {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.contact-name,
+.last-contact,
+.last-convo-topic {
+}
+
+.contact-name {
+  font-size: 1.2em;
+}
+
+.last-contact,
+.last-convo-topic {
+  font-size: 0.8em;
+}
+
+.last-contact {
+  display: inline-block;
+  margin-left: 1em;
+}
+
+.last-convo-topic {
+  grid-area: 1 / 4 / 2 / 6;
+}
+
+.contact-expanded-action-buttons {
+  display: block;
+  grid-area: 2 / 3 / 4 / 5;
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+
+.contact-action-btns {
+  grid-area: 1 / 6 / 2 / 7;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  width: 80%;
+}
+
+.action-button {
+  width: 80%;
+  /* font-size: 100%; */
+  height: 20%;
+  border-radius: 5em;
+  margin: 0em;
+  /* display: grid; */
+  /* grid-template-columns: repeat(3, 1fr); */
+  /* grid-template-rows: repeat(3, 1fr); */
+  /* grid-column-gap: 0px; */
+  /* grid-row-gap: 0px; */
+  cursor: pointer;
+  background-color: var(--light-base-color);
+  border: none;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.action-button:hover {
+  background-color: var(--light-base-hover);
+}
+
+.action-button-text {
+  grid-area: 2 / 2 / 3 / 4;
+}
+
+.act-btn-1,
+.act-btn-2,
+.act-btn-3,
+.act-btn-4 {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.schedule-btn {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.contact-btn {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.schedule-btn,
+.contact-btn {
+  font-size: 1.2em;
+  background-color: var(--light-base-color);
+  color: var(--base-high-cont-color);
+  border: 0.15em solid var(--base-high-cont-color);
+  border-radius: 0.2em;
+  margin: 0 0.1em 0 0.1em;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.schedule-btn:hover,
+.contact-btn:hover {
+  background-color: var(--light-base-hover);
+}
+
+.recent-contact-status-div {
+  grid-area: 1 / 1 / 2 / 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.conversation-list {
+  background-color: var(--light-base-color);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 1em;
+  margin: 1em;
+  padding: 1em;
+}
+
+.conv-btn-container {
+  padding: 0.2em;
+  margin: 0.2em;
+  height: 3em;
+}
+
+.conv-btn {
+  border-radius: 0.5em;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  text-align: left;
+  background-color: var(--light-base-color);
+  border: 1px solid white;
+  box-shadow: inset 1px 1px 3px black;
+}
+
+.conv-btn:hover {
+  background-color: var(--light-base-hover);
+}
+
+.more-conv-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.conv-btn-date-span {
+}
+.conv-btn-conv-span {
+}
+
+.collapse-ct-card {
+  border: 2px solid var(--base-high-cont-color);
+  background-color: var(--light-base-color);
+  height: 5em;
+  width: 5em;
+  border-radius: 100%;
+  cursor: pointer;
+}
+
+.collapse-ct-card:hover {
+  background-color: var(--light-base-hover);
+}
+
+/* (close) contact card contents */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.login-div {
+  padding: 4em;
+  border: 2px solid black;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.modal-base-transparency {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: 0%;
+  justify-content: center;
+}
+
+
+
+@media (min-width: 751px) and (max-width: 1025px) {
+  .modal-box {
+    padding: 2em !important;
+    width: 600px !important;
+
+  }
+
+  .styled-grid-form-input {
+    padding: 1em;
+  }
+}
+
+.modal-box {
+  border: 6px solid var(--base-high-cont-color);
+  color: var(--base-high-cont-color);
+  display: inline-block;
+  padding: 2em;
+  height: auto;
+  background-color: var(--light-base-color);
+  margin-top: 1em;
+  margin-bottom: auto;
+
+}
+
+.modal-top-bar {
+  display: grid;
+  grid-template-areas: "title title title title close";
+}
+
+.modal-close-btn {
+  border: none;
+  background-color: var(--light-base-color);
+  color: var(--base-high-cont-color);
+  cursor: pointer;
+}
+.modal-close-btn:hover {
+  color: var(--base-high-cont-color-hover-xtra);
+}
+
+.add-convo-search-results {
+  height: 12em;
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: column;
+}
+
+.ac-sr-button {
+  margin-bottom: 0.4em;
+  height: 2.3em;
+}
+
+.styled-grid-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.styled-grid-form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.styled-grid-form-txt {
+  grid-column: 1 / 2;
+}
+
+.styled-grid-form-input {
+  grid-column: 1 / 4;
+  margin-bottom: 1.2em;
+}
+
+.cal-header-day {
+  width: 14.25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar-row {
+  width: 100%;
+  height: 16%;
+  border: 1px solid black;
+}
+
+/* the following pertains to side-menu DESKTOP view */
+.side-menu-transparency-base {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.3);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.side-menu {
+  position: fixed;
+  background-color: white;
+  box-shadow: 20px 1px 10px rgba(0, 0, 0, 0.3),
+    20px -5px 10px rgba(0, 0, 0, 0.3);
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+}
+
+.side-menu-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(7, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  height: 100%;
+}
+
+.side-menu-btn {
+  height: 6em;
+  width: 70%;
+}
+
+.side-menu-elem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.side-menu-grid-elem1 {
+  grid-area: 1 / 1 / 2 / 2;
+  position: relative;
+}
+
+.side-menu-grid-elem1 .side-menu-close-btn {
+  background-color: none;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  height: 4em;
+  width: 4em;
+}
+
+.side-menu-grid-elem2 {
+  grid-area: 3 / 1 / 4 / 2;
+}
+
+.side-menu-grid-elem3 {
+  grid-area: 4 / 1 / 5 / 2;
+}
+
+.side-menu-grid-elem4 {
+  grid-area: 5 / 1 / 6 / 2;
+}
+
+.side-menu-grid-elem5 {
+  grid-area: 6 / 1 / 7 / 2;
+}
+
+.side-menu-grid-elem6 {
+  grid-area: 7 / 1 / 8 / 2;
+}
+
+/* (close) side-menu */
+
+.footer-contents {
+  height: 10em;
+  margin-top: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+/* (Close)Classes */
+
+/* ID's */
+#header-logo-text {
+  /*This is the header's h1 text*/
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--base-high-cont-color);
+}
+
+#contacts-list {
+  /*This holds is the container for contact-cards-div. Its flex properties hold contact-cards-div center page.*/
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+}
+
+#contact-cards-div {
+  /*This holds the tiers and contact cards in a div with overflow enabled*/
+  width: 70%;
+  background-color: white;
+  overflow-y: scroll;
+}
+
+/* (close)ID's */
+
+/* MOBILE VIEW */
+@media (min-width: 0px) and (max-width: 500px) {
+  .link-bar-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+} /* MOBILE VIEW cont'd */
+@media (min-width: 750px) {
+  .link-bar-container {
+    display: block;
+  }
+} /* MOBILE VIEW cont'd */
+@media (min-width: 0px) and (max-width: 750px) {
+  /* Classes */
+  .tier-container {
+    padding: 0em;
+    margin: 0.1em;
+    display: flex;
+  }
+
+  .tier-container:hover {
+    background-color: var(--base-high-cont-color);
+  }
+
+  .expand-collapse-btn {
+  }
+
+  .expand-collapse-span {
+    width: 5%;
+  }
+
+  .tier-title-span {
+    padding-left: 1em;
+    width: 90%;
+  }
+
+  .tier-settings-span {
+    width: 5%;
+  }
+
+  /*The following elements pertain to contents of a contact card. CSS grid and styling properties for Mobile view*/
+  .contact-card {
+    margin: 0.5rem 1rem 0.5rem 1rem;
+    padding: 0.5rem;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .contact-card:hover {
+  }
+
+  .contact-card-expanded {
+    margin: 0.5rem 1rem 0.5rem 1rem;
+    padding: 0.5rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+  }
+
+  .contact-expanded-recent-convos {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+
+  .contact-expanded-action-buttons {
+    margin-top: 0;
+    grid-area: 2 / 1 / 3 / 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    margin-bottom: 0;
+  }
+
+  .act-btn-1 {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+  .act-btn-2 {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+  .act-btn-3 {
+    grid-area: 1 / 3 / 2 / 4;
+  }
+  .act-btn-4 {
+    grid-area: 1 / 4 / 2 / 5;
+  }
+
+  .act-btn-1,
+  .act-btn-2,
+  .act-btn-3,
+  .act-btn-4 {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+  }
+
+  .contact-expanded-button-div {
+    grid-area: 4 / 1 / 5 / 2;
+    margin-top: 2em;
+  }
+
+  .contact-expanded-name-phone-email {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .ce-name {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .ce-number {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .ce-email {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+
+  .contact-name-and-last-cont-div {
+    grid-area: 1 / 2 / 2 / 5;
+  }
+
+  .contact-name,
+  .last-contact,
+  .last-convo-topic,
+  .contact-action-btns {
+  }
+
+  .contact-name,
+  .last-contact,
+  .last-convo-topic {
+  }
+
+  .contact-name {
+  }
+
+  .last-contact,
+  .last-convo-topic {
+  }
+
+  .last-contact {
+  }
+
+  .last-convo-topic {
+    grid-area: 2 / 2 / 3 / 5;
+  }
+
+  .contact-action-btns {
+    grid-area: 1 / 5 / 3 / 6;
+    width: 100%;
+  }
+
+  .action-button {
+    font-size: 0.8em;
+    width: 80%;
+    height: 110px;
+    border-radius: 30%;
+    margin: 0;
+    position: static;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: none;
+  }
+
+  .action-button-text {
+    position: static;
+  }
+
+  .schedule-btn,
+  .contact-btn {
+    width: 100%;
+  }
+
+  .schedule-btn:hover,
+  .contact-btn:hover {
+  }
+
+  .recent-contact-status-div {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+
+  .conversation-list {
+    margin: 0;
+    padding: 1em;
+  }
+
+  /* (close) contact card contents */
+
+  .login-container {
+  }
+
+  .login-div {
+  }
+
+  .modal-base-transparency {
+  }
+
+  .modal-box {
+    height: 85%;
+    width: 90%;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+
+  .styled-grid-form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .styled-grid-form-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .styled-grid-form-input {
+    padding: 1em;
+  }
+
+  /* the following pertains to side-menu MOBILE view */
+  .side-menu-transparency-base {
+  }
+
+  .side-menu {
+    box-shadow: 10px 1px 10px rgba(0, 0, 0, 0.3),
+      10px -5px 10px rgba(0, 0, 0, 0.3);
+    width: 80%;
+  }
+  /* (close) side-menu */
+
+  .footer-contents {
+    height: 4em;
+  }
+  /* (Close)Classes */
+
+  /* ID's */
+  #header-logo-text {
+    /*This is the header's h1 text*/
+  }
+
+
+
+  #contacts-list {
+    /*This holds is the container for contact-cards-div. Its flex properties hold contact-cards-div center page.*/
+  }
+
+  #contact-cards-div {
+    /*This holds the tiers and contact cards in a div with overflow enabled*/
+    width: 100%;
+  }
+  /* (close)ID's */
+}
+
+/*MOBILE EXTRA SMALL*/
+@media (min-width: 0px) and (max-width: 350px) {
+  .link-bar-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-expanded-action-buttons {
+    grid-area: 2 / 1 / 3 / 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+
+  .act-btn-1,
+  .act-btn-2,
+  .act-btn-3,
+  .act-btn-4 {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    margin: 0;
+  }
+
+  .act-btn-1 {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+  .act-btn-2 {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+  .act-btn-3 {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+  .act-btn-4 {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+}
