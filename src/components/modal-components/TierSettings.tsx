@@ -104,11 +104,11 @@ const TierSettings = (props: TierSettings__Props) => {
                     }
 
                     return (
-                        <div className="p-1 flex m-1 border-solid border-2 border-black bg-pink-400" key={`${tier.name}-key-settings`}>
+                        <div className="p-1 flex m-1  " key={`${tier.name}-key-settings`}>
                             <div className="inline-block">
                                 <ChangeableInput mutation={changeTierMutation} valueProp={tier.name} valueSwitch={"name"} />
                             </div>
-                            <div className="bg-green-700">
+                            <div className="">
                                 <div>
                                     <Select onValueChange={handleSelect_timeFrameChange} value={selectedTimeFrame} defaultValue={tier.timeFrame}>
                                         <SelectTrigger>
@@ -128,7 +128,7 @@ const TierSettings = (props: TierSettings__Props) => {
                                 </div>
                             </div>
                             <div>
-                                <Button onClick={() => delete_Tier(props.user?.uid, tier.name, dispatch)}>Delete</Button>
+                                <Button variant="destructive" onClick={() => delete_Tier(props.user?.uid, tier.name, dispatch)}>Delete</Button>
                             </div>
                         </div>
                     )
