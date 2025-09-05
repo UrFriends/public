@@ -1,8 +1,10 @@
-import { db } from "@/lib/firebase.js";
-import { collection, doc, getDoc, setDoc } from "@firebase/firestore";
-import * as logger from "firebase-functions/logger";
+import { db } from "@/lib/firebase";
+import { collection, doc, getDoc, setDoc, updateDoc } from "@firebase/firestore";
+import { Logger } from '@firebase/logger';
 import type Stripe from "stripe";
 import type { CustomerSubscription } from "../../subscriptions/functions/src/types/subscriptions.ts";
+
+const logClient = new Logger(`@firebase/SERVICES_TEST`);
 
 /**
  * Creates a Stripe customer and stores the customer ID in Firestore.
@@ -33,7 +35,7 @@ export async function createStripeCustomer(
 
     return customer.id;
   } catch (error) {
-    logger.error("Error creating Stripe customer:", error);
+    logClient.error("Error creating Stripe customer:", error);
     throw error;
   }
 }
@@ -169,7 +171,52 @@ export async function getCustomerSubscription(
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     };
   } catch (error) {
-    logger.error("Error getting customer subscription:", error);
+    logClient.error("Error getting customer subscription:", error);
     throw error;
   }
+}
+
+
+import { stripe } from "@/lib/firebase";
+
+export async function handleSubscriptionUpdated(event: Stripe.Event) {
+  const subscription = event.data.object as Stripe.Subscription;
+  const customerId = subscription.customer as string;
+
+  // Get the Firebase user ID from Stripe metadata
+  const customerData = await stripe.customers.retrieve(customerId);
+  let userId: string | undefined;
+
+  // Check if customerData is not deleted and has metadata
+  if ("deleted" in customerData && customerData.deleted) {
+    console.error("Stripe customer is deleted");
+    return;
+  } else if ("metadata" in customerData && customerData.metadata) {
+    userId = customerData.metadata.firebaseUID;
+  }
+
+  if (!userId) {
+    console.error("No Firebase UID found in customer metadata");
+    return;
+  }
+
+  // Update user subscription data in Firestore
+  const collectionRef = collection(db, "user_subscriptions");
+  const docRef = doc(collectionRef, userId)
+  await updateDoc(docRef,
+    {
+      subscription: {
+        id: subscription.id,
+        status: subscription.status,
+        priceId: subscription.items.data[0].price.id,
+        productId: subscription.items.data[0].price.product,
+        currentPeriodEnd: new Date(subscription.items.data[0]
+          .current_period_end * 1000),
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        createdAt: new Date(subscription.created * 1000),
+        updatedAt: new Date(),
+      },
+    });
+
+  console.info(`Updated subscription for user ${userId}`);
 }

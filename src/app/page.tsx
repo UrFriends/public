@@ -2,7 +2,6 @@
 
 import { Provider } from "react-redux";
 
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
@@ -19,7 +18,7 @@ import { store } from "./store";
 import { GoogleIcon } from '@/components/icons/google-icon';
 import { Loader2, LogOut } from 'lucide-react';
 
-import { db } from '@/lib/firebase';
+import { db } from "@/lib/firebase";
 
 import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "@firebase/firestore";
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
@@ -30,12 +29,13 @@ import {
   useQuery
 } from '@tanstack/react-query';
 
-
+import { stripe } from "@/lib/firebase";
 
 import LinkBar from "@/components/LinkBar";
 import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { createStripeCustomer } from "../../services/stripe";
 import { Conversation, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
@@ -331,11 +331,13 @@ function DashboardView() {
         <RandomButtonBar />
         <p></p>
         <LinkBar />
+        {user && typeof user.email === "string" && typeof user.uid === "string" &&
+          <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>}
         <Phonebook data={data} />
         <Footer />
 
       </main>
-    </div>
+    </div >
   );
 }
 

@@ -15,6 +15,7 @@
     "@firebase/app": "^0.14.1",
     "@firebase/auth": "^1.11.0",
     "@firebase/firestore": "^4.9.0",
+    "@firebase/logger": "^0.5.0",
     "@genkit-ai/googleai": "^1.8.0",
     "@genkit-ai/next": "^1.8.0",
     "@hookform/resolvers": "^4.1.3",
