@@ -2,7 +2,6 @@
 
 import { Provider } from "react-redux";
 
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
@@ -19,7 +18,7 @@ import { store } from "./store";
 import { GoogleIcon } from '@/components/icons/google-icon';
 import { Loader2, LogOut } from 'lucide-react';
 
-import { db } from '@/lib/firebase';
+import { db } from "@/lib/firebase";
 
 import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "@firebase/firestore";
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
@@ -30,17 +29,35 @@ import {
   useQuery
 } from '@tanstack/react-query';
 
-
+import { stripe } from "@/lib/firebase";
 
 import LinkBar from "@/components/LinkBar";
 import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { createStripeCustomer } from "../../services/stripe";
 import { Conversation, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
 
 const queryClient = new QueryClient()
+
+// Example usage in DashboardView or LandingPage
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
+
+async function handleSubscribe(email: string) {
+  const priceId = "price_12345"; // Replace with your actual price ID
+  const res = await fetch("/api/stripe/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, priceId }),
+  });
+  const { sessionId } = await res.json();
+  const stripe = await stripePromise;
+  await stripe?.redirectToCheckout({ sessionId });
+}
 
 
 function LoginView() {
@@ -161,6 +178,11 @@ const createUserAccount = async (userID: string) => {
           { name: "5", timeFrame: "6m" }
         ]
       },
+      subscription: {
+        active: false,
+        stripeCustomerId: null,
+        currentPeriodEnd: null
+      }
     });
 
     const phonebook_Builder = collection(users_account_info, "phonebook");
@@ -332,11 +354,13 @@ function DashboardView() {
         <RandomButtonBar />
         <p></p>
         <LinkBar />
+        {user && typeof user.email === "string" && typeof user.uid === "string" &&
+          <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>}
         <Phonebook data={data} />
         <Footer />
 
       </main>
-    </div>
+    </div >
   );
 }
 

@@ -8,6 +8,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   updateDoc,
   writeBatch
 } from "@firebase/firestore";
@@ -190,6 +191,24 @@ export const delete_Contact = async (UserID: string, contact_docID: string, disp
   try {
     const contactToDelete = doc(db, "user_info", UserID, "phonebook", contact_docID);
     const performDelete = async () => {
+
+      const delete_conversation_subCollection = async () => {
+        try {
+          const conversationsToDelete = collection(db, "user_info", UserID, "phonebook", contact_docID, "lastConvo")
+          const q = query(conversationsToDelete);
+          const querySnapshot = await getDocs(q)
+          const deletePromises: Promise<void>[] = [];
+          querySnapshot.forEach((documentSnapshot) => {
+            deletePromises.push(deleteDoc(doc(db, "user_info", UserID, "phonebook", contact_docID, documentSnapshot.id)));
+          });
+          await Promise.all(deletePromises);
+          console.log("All documents in the subcollection deleted successfully.");
+        } catch (error) {
+          console.log(error, )
+        }
+      }
+      delete_conversation_subCollection();
+
       try {
         console.log("TODO: add Document ID for the subcollection of LastConvo")
         // the lastConvo subcollection will need to have each document individually deleted
@@ -391,3 +410,4 @@ export const delete_Tier = async (UserID: string, tierName: string, dispatch: Di
   }
 };
 // (close) Tier services
+
