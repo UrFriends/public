@@ -42,6 +42,23 @@ import "../index.css";
 
 const queryClient = new QueryClient()
 
+// Example usage in DashboardView or LandingPage
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
+
+async function handleSubscribe(email: string) {
+  const priceId = "price_12345"; // Replace with your actual price ID
+  const res = await fetch("/api/stripe/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, priceId }),
+  });
+  const { sessionId } = await res.json();
+  const stripe = await stripePromise;
+  await stripe?.redirectToCheckout({ sessionId });
+}
+
 
 function LoginView() {
   const { loginWithGoogle } = useAuth();
@@ -160,6 +177,11 @@ const createUserAccount = async (userID: string) => {
           { name: "5", timeFrame: "6m" }
         ]
       },
+      subscription: {
+        active: false,
+        stripeCustomerId: null,
+        currentPeriodEnd: null
+      }
     });
 
     const phonebook_Builder = collection(users_account_info, "phonebook");
