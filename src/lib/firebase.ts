@@ -1,12 +1,8 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "@firebase/app";
 import { Auth, getAuth } from "@firebase/auth";
 import { Firestore, getFirestore } from "@firebase/firestore";
-import Stripe from "stripe";
 
 
-const stripe = new Stripe(process.env.SECRET_KEY, {
-  apiVersion: "2025-08-27.basil",
-});
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_STAGING_API_KEY,
@@ -28,4 +24,5 @@ if (!getApps().length) {
 const auth: Auth = getAuth(app);
 const db: Firestore = getFirestore(app);
 
-export { app, auth, db, stripe };
+export { app, auth, db };
+
