@@ -34,7 +34,7 @@ import LinkBar from "@/components/LinkBar";
 import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Conversation, Person, tiersTime_Object } from "../../types/Types";
+import { Conversation, HeaderComponent__Props, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
 
@@ -78,6 +78,23 @@ function LoginView() {
     </main>
   );
 }
+
+export const HeaderComponent = (props: HeaderComponent__Props) => {
+  return (
+    <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
+      <h1 className="text-lg font-semibold text-foreground">
+        {"UrFriends! "}
+        {props.displayName && <>
+          Hello, {props.displayName || 'User'}
+        </>}
+      </h1>
+      <Button variant="ghost" size="icon" onClick={props.logout} aria-label="Logout">
+        <LogOut className="h-s5 w-5" />
+      </Button>
+    </header>
+  )
+}
+
 
 function LandingPage() {
   const { loginWithGoogle } = useAuth();
@@ -196,6 +213,7 @@ function DashboardView() {
   const { user, logout } = useAuth();
   const dispatch = useDispatch();
   const queryClient = new QueryClient();
+  const router = useRouter();
 
   useEffect(() => {
     const checkForNewUser = async () => {
@@ -337,20 +355,14 @@ function DashboardView() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
-        <h1 className="text-lg font-semibold text-foreground">
-          UrFriends! Hello, {user?.displayName || 'User'}
-        </h1>
-        <Button variant="ghost" size="icon" onClick={logout} aria-label="Logout">
-          <LogOut className="h-s5 w-5" />
-        </Button>
-      </header>
+      <HeaderComponent displayName={user?.displayName} logout={logout} />
       <main className="">
         <Notification />
         <Modal user={user} data={data} />
         <RandomButtonBar />
         <p></p>
         <LinkBar />
+        <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>
         {/* {user && typeof user.email === "string" && typeof user.uid === "string" &&
           <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>} */}
         <Phonebook data={data} />
@@ -382,3 +394,5 @@ export default function Home() {
     </QueryClientProvider>
     : <LandingPage />;
 }
+
+
