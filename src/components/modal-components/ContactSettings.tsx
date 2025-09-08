@@ -1,4 +1,11 @@
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { sendNotification } from "@/hooks/sendNotification";
 import { useAppSelector } from "@/hooks/use-app-selector";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -61,6 +68,28 @@ const ContactSettings = (props: ContactSettings__Props) => {
         }
       </>
       }
+      {person?.tier && typeof person.tier == "string" &&
+        <>
+          <p>Tier:</p>
+          <Select defaultValue={person.tier} name="tier">
+            <SelectTrigger className="w-[80%]">
+              <SelectValue placeholder="Tier" />
+            </SelectTrigger>
+            <SelectContent  >
+              {Array.isArray(props.settings?.tiersTime) &&
+                props.settings.tiersTime.map((tier) => (
+                  <div key={tier.name}>
+                    <SelectItem value={tier.name} key={`${tier}-key-select`}>
+                      {tier.name}
+                    </SelectItem>
+                  </div>
+                ))
+              }
+            </SelectContent>
+          </Select>
+        </>
+      }
+
       {person && person.docID && <div className="p-2">
         {!showConfirm && <Button variant="destructive" onClick={() => setShowConfirm(true)}>
           Delete {person?.name.first}
@@ -68,6 +97,9 @@ const ContactSettings = (props: ContactSettings__Props) => {
         {showConfirm && <Button variant="destructive" disabled onClick={() => setShowConfirm(true)}>
           Delete {person?.name.first}
         </Button>}
+
+
+
         {showConfirm && person && person.docID &&
           <div className="mt-2">
             <p>
@@ -82,12 +114,15 @@ const ContactSettings = (props: ContactSettings__Props) => {
             }}>
               I'm Sure
             </Button>
+
             <Button variant="outline" onClick={() => { setShowConfirm(false) }}>
               Nevermind
             </Button>
           </div>
         }
       </div>}
+
+
     </>
   );
 };

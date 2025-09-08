@@ -1,6 +1,14 @@
 import { User } from "@firebase/auth";
 import { UseMutationResult } from "@tanstack/react-query";
 
+export interface ChangeTierSelect__Props {
+  user: User;
+  settings: {
+    tiersTime: tiersTime_Object[] | tiersTime_Object | null;
+  };
+}
+
+
 //TODO: develop the type system
 export interface Person {
   name: {
@@ -40,7 +48,10 @@ export interface RecentConversations__Props {
 }
 
 export interface ContactSettings__Props {
- user: User;
+  user: User;
+  settings: {
+    tiersTime: tiersTime_Object[];
+  };
 }
 
 export interface ModifyDataButton__Props {
