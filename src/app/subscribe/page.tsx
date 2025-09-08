@@ -1,14 +1,18 @@
 "use client"
 
 import { HeaderComponent } from "@/app/page";
+import { BackArrowIcon } from "@/components/icons/back-arrow-icon";
+import { HomeIcon } from "@/components/icons/home-icon";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth"; // Adjust path if needed
 import { loadStripe } from "@stripe/stripe-js";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
 
 function SubscriptionBlock({ user }: { user: any }) {
-
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
@@ -42,6 +46,7 @@ function SubscriptionBlock({ user }: { user: any }) {
 }
 
 export default function SubscribePage() {
+  const router = useRouter();
   const { user, logout } = useAuth();
 
   if (!user) {
@@ -55,5 +60,25 @@ export default function SubscribePage() {
   return (
     <>
       <HeaderComponent logout={logout} displayName={user.displayName} />
+      <ReturnHomeButton router={router} />
       <SubscriptionBlock user={user} /></>);
+}
+
+
+interface ReturnHomeButton__Props {
+  router: AppRouterInstance
+}
+
+export const ReturnHomeButton = (props: ReturnHomeButton__Props) => {
+  return (
+    <div className="flex content-center justify-center">
+      <Button onClick={() => props.router.push("/")}>
+
+        <BackArrowIcon />
+        <HomeIcon />
+        <p>Home</p>
+
+      </Button>
+    </div>
+  )
 }
