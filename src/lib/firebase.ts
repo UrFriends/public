@@ -2,10 +2,9 @@ import { FirebaseApp, getApp, getApps, initializeApp } from "@firebase/app";
 import { Auth, getAuth } from "@firebase/auth";
 import { Firestore, getFirestore } from "@firebase/firestore";
 import Stripe from "stripe";
-import { SECRET_KEY } from "../../secrets";
 
 
-const stripe = new Stripe(SECRET_KEY, {
+const stripe = new Stripe(process.env.SECRET_KEY, {
   apiVersion: "2025-08-27.basil",
 });
 
