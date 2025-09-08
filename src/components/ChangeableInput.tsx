@@ -32,7 +32,7 @@ export const ChangeableInput = (props: ChangeableInput__Props) => {
           props.mutation.mutateAsync({ changeQualifier: props.valueProp, keyToChange: props.valueSwitch, change: safeInputVal });
         } else {
           //props and input are not valid
-          sendNotification(dispatch, { message: "mutation is undefined, or props on ChangeableInput are broken", type: "red" });
+          sendNotification(dispatch, { message: "Formatting error, there is an HTML error in this component", type: "red" });
           return false;
         }
 

@@ -46,6 +46,19 @@ const ContactSettings = (props: ContactSettings__Props) => {
     }
   })
 
+  const onTierSelectChange = (value: string) => {
+    const callService = async () => {
+      try {
+        changePersonMutation.mutateAsync({ changeQualifier: "unused variable?", keyToChange: "tier", change: value });
+        sendNotification(dispatch, { message: "The tier was successfully change", type: "green" });
+      } catch (err) {
+        console.error("ERROR ContactSettings onTierSelectChange:", err);
+        sendNotification(dispatch, { message: "There was an error changing the tier", type: "red" });
+      }
+    };
+    callService();
+  }
+
   return (
 
     <>
@@ -68,10 +81,10 @@ const ContactSettings = (props: ContactSettings__Props) => {
         }
       </>
       }
-      {person?.tier && typeof person.tier == "string" &&
+      {person && person?.tier && typeof person.tier == "string" &&
         <>
           <p>Tier:</p>
-          <Select defaultValue={person.tier} name="tier">
+          <Select defaultValue={person.tier} onValueChange={(value) => onTierSelectChange(value)} name="tier">
             <SelectTrigger className="w-[80%]">
               <SelectValue placeholder="Tier" />
             </SelectTrigger>
