@@ -42,13 +42,8 @@ const queryClient = new QueryClient()
 
 // Example usage in DashboardView or LandingPage
 import { loadStripe } from "@stripe/stripe-js";
-import Stripe from "stripe";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
-
-const stripe = new Stripe(process.env.SECRET_KEY ?? "", {
-  apiVersion: "2025-08-27.basil",
-});
 
 async function handleSubscribe(email: string) {
   const priceId = "price_12345"; // Replace with your actual price ID

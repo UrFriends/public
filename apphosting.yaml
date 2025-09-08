@@ -11,6 +11,6 @@ env:
   - variable: NEXT_PUBLIC_STAGING_API_KEY
     secret: projects/45619187767/secrets/staging_API_key
 
-  - variable: SECRET_KEY
+  - variable: STRIPE_SECRET_KEY
     secret: projects/45619187767/secrets/stripe_secret_key
 
