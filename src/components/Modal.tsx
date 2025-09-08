@@ -80,7 +80,7 @@ const Modal = (props: Modal__Props) => {
             {modalType == "we-spoke" && <ReachOut data={props.data} user={props.user} />}
             {modalType == "convo-starters" && <ConvoStarters />}
             {modalType.slice(0, 13) == "schedule-conv" && <ScheduleConvo />}
-            {modalType.slice(0, 8) == "settings" && <ContactSettings user={props.user} />}
+            {modalType.slice(0, 8) == "settings" && <ContactSettings settings={props.data.settings} user={props.user} />}
             {modalType == "tier-settings" && <TierSettings user={props.user} settings={props.data.settings} />}
             {modalType == "conversation" && (<ConversationDetails user={props.user} />)}
           </div>

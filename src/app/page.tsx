@@ -29,13 +29,11 @@ import {
   useQuery
 } from '@tanstack/react-query';
 
-import { stripe } from "@/lib/firebase";
 
 import LinkBar from "@/components/LinkBar";
 import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { createStripeCustomer } from "../../services/stripe";
 import { Conversation, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
@@ -353,8 +351,8 @@ function DashboardView() {
         <RandomButtonBar />
         <p></p>
         <LinkBar />
-        {user && typeof user.email === "string" && typeof user.uid === "string" &&
-          <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>}
+        {/* {user && typeof user.email === "string" && typeof user.uid === "string" &&
+          <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>} */}
         <Phonebook data={data} />
         <Footer />
 
