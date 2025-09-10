@@ -12,7 +12,6 @@ import { useState } from "react";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
 
-
 function SubscriptionBlock({ user }: { user: any }) {
   const [loading, setLoading] = useState(false);
 

@@ -57,7 +57,7 @@ async function handleSubscribe(email: string) {
   await stripe?.redirectToCheckout({ sessionId });
 }
 
-
+// Erasure incoming
 function LoginView() {
   const { loginWithGoogle } = useAuth();
   return (
@@ -97,7 +97,6 @@ export const HeaderComponent = (props: HeaderComponent__Props) => {
 
 
 function LandingPage() {
-  const { loginWithGoogle } = useAuth();
   const router = useRouter();
 
   return (
@@ -195,8 +194,8 @@ const createUserAccount = async (userID: string) => {
       },
       subscription: {
         active: false,
-        stripeCustomerId: null,
-        currentPeriodEnd: null
+        stripeCustomerId: "",
+        currentPeriodEnd: "",
       }
     });
 
@@ -310,6 +309,7 @@ function DashboardView() {
         const final_userData = {
           settings: accountData.data().settings,
           phonebook: organized_phonebook, // structuredClone not necessary here
+          subscription: accountData.data().subscription
         };
 
         dispatch(populateData(final_userData));
@@ -361,9 +361,11 @@ function DashboardView() {
         <Notification />
         <Modal user={user} data={data} />
         <RandomButtonBar />
+        {!data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
+        {data.subscription.active && <div>You are a subscriber!</div>}
         <p></p>
         <LinkBar />
-        <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>
+
         {/* {user && typeof user.email === "string" && typeof user.uid === "string" &&
           <Button onClick={() => createStripeCustomer(stripe, user.uid as string, user.email as string)}>Create Customer</Button>} */}
         <Phonebook data={data} />
