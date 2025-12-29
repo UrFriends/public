@@ -56,7 +56,8 @@ export interface ContactSettings__Props {
 
 export interface HeaderComponent__Props {
   displayName?: string | undefined | null,
-  logout: () => Promise<void>
+  logout: () => Promise<void>,
+  data?: { settings: any; phonebook: { [key: string]: any[]; }; subscription: any; }
 }
 
 export interface ModifyDataButton__Props {

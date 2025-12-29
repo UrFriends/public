@@ -80,18 +80,23 @@ function LoginView() {
 }
 
 export const HeaderComponent = (props: HeaderComponent__Props) => {
+  const router = useRouter();
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
-      <h1 className="text-lg font-semibold text-foreground">
-        {"UrFriends! "}
-        {props.displayName && <>
-          Hello, {props.displayName || 'User'}
-        </>}
-      </h1>
-      <Button variant="ghost" size="icon" onClick={props.logout} aria-label="Logout">
-        <LogOut className="h-s5 w-5" />
-      </Button>
-    </header>
+    <>
+      <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
+        <h1 className="text-lg font-semibold text-foreground">
+          {"UrFriends! "}
+          {props.displayName && <>
+            Hello, {props.displayName || 'User'}
+          </>}
+        </h1>
+        <Button variant="ghost" size="icon" onClick={props.logout} aria-label="Logout">
+          <LogOut className="h-s5 w-5" />
+        </Button>
+      </header>
+      {props.data && !props.data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
+      {props.data && props.data.subscription.active && <div>You are a subscriber!</div>}
+    </>
   )
 }
 
@@ -329,10 +334,9 @@ function DashboardView() {
           <LogOut className="h-s5 w-5" />
         </Button></>
     )
+  } else {
+    console.log("The data in dashboard ", data)
   }
-  // } else {
-  //   console.log("NODATA", "NODATA")
-  // }
 
   // if (isPending) {
   //   console.log(isPending, "data55")
@@ -356,13 +360,12 @@ function DashboardView() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <HeaderComponent displayName={user?.displayName} logout={logout} />
+      <HeaderComponent displayName={user?.displayName} logout={logout} data={data} />
       <main className="">
         <Notification />
         <Modal user={user} data={data} />
         <RandomButtonBar />
-        {/* {!data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>} */}
-        {/* {data.subscription.active && <div>You are a subscriber!</div>} */}
+
         <p></p>
         <LinkBar />
 
@@ -379,6 +382,10 @@ function DashboardView() {
 export default function Home() {
   const { user, loading } = useAuth();
 
+  if (user) {
+    console.log("User on Home: ", user)
+  }
+
   if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
@@ -387,7 +394,6 @@ export default function Home() {
       </div>
     );
   }
-
 
   return user ?
     <QueryClientProvider client={queryClient}>
