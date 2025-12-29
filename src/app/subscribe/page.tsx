@@ -12,35 +12,44 @@ import { useState } from "react";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
 
+function StripeCheckoutButton() {
+  const router = useRouter();
+
+  return (
+    <button
+      onClick={() =>
+        router.push('https://buy.stripe.com/3cI5kD6Owbtcb5s05TfEk01')
+      }
+      className="
+        inline-flex items-center justify-center
+        rounded-lg px-5 py-2.5
+        text-sm font-medium
+        text-[#2b1a14]
+        bg-[#f3dfc2]
+        border border-[#d6bfa0]
+        shadow-sm
+        transition-all duration-200 ease-out
+        hover:bg-[#edd3ae]
+        hover:shadow-md
+        active:scale-[0.98]
+        focus:outline-none focus:ring-2 focus:ring-[#c4a484] focus:ring-offset-2
+      "
+    >
+      Upgrade
+    </button>
+  );
+}
+
 function SubscriptionBlock({ user }: { user: any }) {
   const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = async () => {
-    setLoading(true);
-    const priceId = "price_12345"; // Replace with your Stripe Price ID
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email, priceId }),
-    });
-    const { sessionId } = await res.json();
-    const stripe = await stripePromise;
-    await stripe?.redirectToCheckout({ sessionId });
-    setLoading(false);
-  };
 
   return (
     <>
       <div className="bg-white rounded-lg shadow p-6 mb-8 max-w-md mx-auto text-center">
         <h2 className="text-xl font-bold mb-2">Upgrade to Pro</h2>
         <p className="mb-4 text-gray-600">Unlock unlimited contacts, AI tools, and more for $9/month.</p>
-        <button
-          onClick={handleSubscribe}
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition font-semibold disabled:opacity-50"
-        >
-          {loading ? "Redirecting..." : "Subscribe with Stripe"}
-        </button>
+        <StripeCheckoutButton />
       </div></>
   );
 }
