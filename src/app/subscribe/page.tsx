@@ -12,13 +12,23 @@ import { useState } from "react";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
 
-function StripeCheckoutButton() {
+export interface StripeCheckoutButton__Props {
+  user?: any
+}
+
+function StripeCheckoutButton(props: StripeCheckoutButton__Props) {
   const router = useRouter();
+
+  if (!props.user) {
+    return (<div>
+      There is an error associating a user with this transaction
+    </div>)
+  }
 
   return (
     <button
       onClick={() =>
-        router.push('https://buy.stripe.com/3cI5kD6Owbtcb5s05TfEk01')
+        router.push(`https://buy.stripe.com/3cI5kD6Owbtcb5s05TfEk01?client_reference_id=${props.user.uid}`)
       }
       className="
         inline-flex items-center justify-center
@@ -43,13 +53,12 @@ function StripeCheckoutButton() {
 function SubscriptionBlock({ user }: { user: any }) {
   const [loading, setLoading] = useState(false);
 
-
   return (
     <>
       <div className="bg-white rounded-lg shadow p-6 mb-8 max-w-md mx-auto text-center">
         <h2 className="text-xl font-bold mb-2">Upgrade to Pro</h2>
         <p className="mb-4 text-gray-600">Unlock unlimited contacts, AI tools, and more for $9/month.</p>
-        <StripeCheckoutButton />
+        <StripeCheckoutButton user={user} />
       </div></>
   );
 }

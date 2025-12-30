@@ -72,7 +72,6 @@ function LoginView() {
             <GoogleIcon className="mr-2 h-5 w-5 fill-current" />
             Continue with Google
           </Button>
-
         </CardContent>
       </Card>
     </main>
@@ -355,7 +354,6 @@ function DashboardView() {
   // } else {
   //   console.log("FETCH", "FETCH")
   // }
-
 
 
   return (
