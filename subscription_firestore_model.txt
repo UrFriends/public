@@ -1,0 +1,24 @@
+{
+  // 🔐 Identity (written once)
+  stripe: {
+    customerId: "cus_...",
+    subscriptionId: "sub_...",
+    priceId: "price_...",
+    productId: "prod_..."
+  },
+
+  // 💳 Billing state (mutable)
+  billing: {
+    status: "pending" | "trialing" | "active" | "past_due" | "paused" | "canceled",
+    currentPeriodEnd: Timestamp | null,
+    trialEnd: Timestamp | null,
+    lastInvoiceId: string | null,
+    updatedAt: Timestamp
+  },
+
+  // 🚦 App-level entitlement (derived)
+  entitlements: {
+    pro: boolean
+  }
+}
+

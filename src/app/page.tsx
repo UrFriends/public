@@ -20,7 +20,7 @@ import { Loader2, LogOut } from 'lucide-react';
 
 import { db } from "@/lib/firebase";
 
-import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "@firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp } from "@firebase/firestore";
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
 
 import {
@@ -196,10 +196,29 @@ const createUserAccount = async (userID: string) => {
           { name: "5", timeFrame: "6m" }
         ]
       },
+
       subscription: {
-        active: false,
-        stripeCustomerId: "",
-        currentPeriodEnd: "",
+        // 🔐 Stripe identity (written once, rarely changes)
+        stripe: {
+          customerId: null,        // "cus_..."
+          subscriptionId: null,    // "sub_..."
+          priceId: null,           // "price_..."
+          productId: null          // "prod_..."
+        },
+
+        // 💳 Billing state (updated by webhooks)
+        billing: {
+          status: "pending",       // pending | trialing | active | past_due | paused | canceled
+          currentPeriodEnd: null,  // Timestamp
+          trialEnd: null,          // Timestamp
+          lastInvoiceId: null,     // "in_..."
+          updatedAt: Timestamp.now()
+        },
+
+        // 🚦 App-level access (derived from billing.status)
+        entitlements: {
+          pro: false
+        }
       }
     });
 
