@@ -31,7 +31,6 @@ import {
 
 
 import LinkBar from "@/components/LinkBar";
-import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Conversation, HeaderComponent__Props, Person, tiersTime_Object } from "../../types/Types";
@@ -41,6 +40,7 @@ import "../index.css";
 const queryClient = new QueryClient()
 
 // Example usage in DashboardView or LandingPage
+import { populateData } from "@/components/features/dataSlice";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
@@ -93,8 +93,8 @@ export const HeaderComponent = (props: HeaderComponent__Props) => {
           <LogOut className="h-s5 w-5" />
         </Button>
       </header>
-      {props.data && !props.data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
-      {props.data && props.data.subscription.active && <div>You are a subscriber!</div>}
+      {props.data && !props.data.subscription.pro && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
+      {props.data && props.data.subscription.pro && <div>You are a subscriber!</div>}
     </>
   )
 }
@@ -332,7 +332,7 @@ function DashboardView() {
         const final_userData = {
           settings: accountData.data().settings,
           phonebook: organized_phonebook, // structuredClone not necessary here
-          subscription: accountData.data().subscription
+          subscription: accountData.data().subscription.entitlements
         };
 
         dispatch(populateData(final_userData));
