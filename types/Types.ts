@@ -27,10 +27,10 @@ export interface Person {
 export type ISODateString = string;
 
 export interface Conversation {
-    date: ISODateString | null;
-    topic: string | null;
-    DocID?: string;
-  }
+  date: ISODateString | null;
+  topic: string | null;
+  DocID?: string;
+}
 
 export interface Modal__Props {
   data?: any;
@@ -57,7 +57,7 @@ export interface ContactSettings__Props {
 export interface HeaderComponent__Props {
   displayName?: string | undefined | null,
   logout: () => Promise<void>,
-  data?: { settings: any; phonebook: { [key: string]: any[]; }; subscription: any; }
+  data?: { settings: any; phonebook: { [key: string]: any[]; }; }
 }
 
 export interface ModifyDataButton__Props {

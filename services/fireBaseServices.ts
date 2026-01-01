@@ -17,7 +17,7 @@ import { Conversation, Person, tiersTime_Object } from "../types/Types";
 export const check_if_user_has_DB = async (arg1: string | undefined) => {
   if (typeof arg1 == "string") {
     try {
-      const users_account_info = doc(db, "user_info", arg1);
+      const users_account_info = doc(db, "user_info_public", arg1);
       const userAccount = await getDoc(users_account_info);
       if (userAccount.exists()) {
         //the user has an account
@@ -38,7 +38,7 @@ export const add_Conversation = async (UserID: string, person: Person, conversat
 ) => {
   if (person) {
     try {
-      const users_account_info = doc(db, "user_info", UserID);
+      const users_account_info = doc(db, "user_info_public", UserID);
       const phonebookRef = collection(users_account_info, "phonebook");
       const contactRef = doc(phonebookRef, person.docID);
       const lastConvoRef = collection(contactRef, "lastConvo");
@@ -68,39 +68,39 @@ export const changeProperty_Conversation = async (
   dispatch: Dispatch<UnknownAction>
 ) => {
   //change a given property on a contact
-    try {
-      const users_account_info = doc(db, "user_info", UserID);
-      const phonebookRef = collection(users_account_info, "phonebook");
-      const contactRef = doc(phonebookRef, person.docID);
-      const lastConvoRef = collection(contactRef, "lastConvo");
-      const conversationRef = doc(lastConvoRef, conversation.DocID)
+  try {
+    const users_account_info = doc(db, "user_info_public", UserID);
+    const phonebookRef = collection(users_account_info, "phonebook");
+    const contactRef = doc(phonebookRef, person.docID);
+    const lastConvoRef = collection(contactRef, "lastConvo");
+    const conversationRef = doc(lastConvoRef, conversation.DocID)
 
-      const changeProperty = async () => {
-        try {
-          await updateDoc(conversationRef, {
-            topic: conversation.topic,
-            date: conversation.date
-          })
-          sendNotification(dispatch, { message: "Conversation property change successful", type: "green" })
-        } catch (err) {
-          console.error(err, "ERROR fireBaseServices changeProperty_Conversation: failed to change property");
-          sendNotification(dispatch, { message: "ERROR fireBaseServices changeProperty_Conversation: failed to change property", type: "red" })
-        }
-      };
-      changeProperty();
+    const changeProperty = async () => {
+      try {
+        await updateDoc(conversationRef, {
+          topic: conversation.topic,
+          date: conversation.date
+        })
+        sendNotification(dispatch, { message: "Conversation property change successful", type: "green" })
+      } catch (err) {
+        console.error(err, "ERROR fireBaseServices changeProperty_Conversation: failed to change property");
+        sendNotification(dispatch, { message: "ERROR fireBaseServices changeProperty_Conversation: failed to change property", type: "red" })
+      }
+    };
+    changeProperty();
 
 
-    } catch (error) {
-      console.log(error, "ERROR fireBaseServices changeProperty_Conversation: firebase failure")
+  } catch (error) {
+    console.log(error, "ERROR fireBaseServices changeProperty_Conversation: firebase failure")
 
-    }
+  }
 
 };
 
 export const delete_Conversation = async (UserID: string, person: Person, conversation_ID: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a conversation
   try {
-    const users_account_info = doc(db, "user_info", UserID);
+    const users_account_info = doc(db, "user_info_public", UserID);
     const phonebookRef = collection(users_account_info, "phonebook");
     const contactRef = doc(phonebookRef, person.docID);
     const lastConvoRef = collection(contactRef, "lastConvo");
@@ -132,7 +132,7 @@ export const delete_Conversation = async (UserID: string, person: Person, conver
 export const add_Contact = async (UserID: string, person: Person) => {
   //add a contact to someone's phonebook
   try {
-    const users_account_info = doc(db, "user_info", UserID);
+    const users_account_info = doc(db, "user_info_public", UserID);
     const phonebookRef = collection(users_account_info, "phonebook");
     const add_Document = await addDoc(phonebookRef, person);
 
@@ -161,7 +161,7 @@ export const changeProperty_Contact = async (
   // y's phonebook document ID
   const changeContact = async () => {
     try {
-      const contactToChangeRef = doc(db, "user_info", UserID, "phonebook", changeQualifier);
+      const contactToChangeRef = doc(db, "user_info_public", UserID, "phonebook", changeQualifier);
       if (propertyToChange == "first name") {
         //first name is a nested property in the name property
         await updateDoc(contactToChangeRef, {
@@ -188,7 +188,7 @@ export const changeProperty_Contact = async (
 export const delete_Contact = async (UserID: string, contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a contact
   try {
-    const contactToDelete = doc(db, "user_info", UserID, "phonebook", contact_docID);
+    const contactToDelete = doc(db, "user_info_public", UserID, "phonebook", contact_docID);
     const performDelete = async () => {
       try {
         console.log("TODO: add Document ID for the subcollection of LastConvo")
@@ -223,7 +223,7 @@ export const add_Tier = async (
     add_Tier
     const perform_AddTier = async () => {
       try {
-        const users_account_info = doc(db, "user_info", UserID);
+        const users_account_info = doc(db, "user_info_public", UserID);
         const userData = await getDoc(users_account_info);
         if (userData.data()) {
           let setting_Data = {
@@ -284,7 +284,7 @@ export const changeProperty_Tier = async (
 ) => {
   const change_Tier = async () => {
     try {
-      const users_account_info = doc(db, "user_info", UserID);
+      const users_account_info = doc(db, "user_info_public", UserID);
       const userData = await getDoc(users_account_info);
       if (userData.data()) {
         let newTiers_Data = {
@@ -349,7 +349,7 @@ export const changeProperty_Tier = async (
 
 export const delete_Tier = async (UserID: string, tierName: string, dispatch: Dispatch<UnknownAction>) => {
   try {
-    const users_account_info = doc(db, "user_info", UserID);
+    const users_account_info = doc(db, "user_info_public", UserID);
     const userData = await getDoc(users_account_info);
     if (userData.data()) {
       const data = userData.data();

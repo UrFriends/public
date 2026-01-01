@@ -24,7 +24,6 @@ import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp } from "@fi
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
 
 import {
-  QueryClient,
   QueryClientProvider,
   useQuery
 } from '@tanstack/react-query';
@@ -37,9 +36,8 @@ import { Conversation, HeaderComponent__Props, Person, tiersTime_Object } from "
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
 
-const queryClient = new QueryClient()
-
 // Example usage in DashboardView or LandingPage
+import { queryClient } from "@/app/queryClient";
 import { populateData } from "@/components/features/dataSlice";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -93,8 +91,7 @@ export const HeaderComponent = (props: HeaderComponent__Props) => {
           <LogOut className="h-s5 w-5" />
         </Button>
       </header>
-      {props.data && !props.data.subscription.pro && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
-      {props.data && props.data.subscription.pro && <div>You are a subscriber!</div>}
+      {props.data && < Button onClick={() => router.push("/subscribe")}>Subscribe</Button >}
     </>
   )
 }
@@ -185,7 +182,7 @@ function LandingPage() {
 
 const createUserAccount = async (userID: string) => {
   try {
-    const users_account_info = doc(db, "user_info", userID);
+    const users_account_info = doc(db, "user_info_public", userID);
     await setDoc(users_account_info, {
       settings: {
         tiersTime: [
@@ -196,30 +193,10 @@ const createUserAccount = async (userID: string) => {
           { name: "5", timeFrame: "6m" }
         ]
       },
-
-      subscription: {
-        // 🔐 Stripe identity (written once, rarely changes)
-        stripe: {
-          customerId: null,        // "cus_..."
-          subscriptionId: null,    // "sub_..."
-          priceId: null,           // "price_..."
-          productId: null          // "prod_..."
-        },
-
-        // 💳 Billing state (updated by webhooks)
-        billing: {
-          status: "pending",       // pending | trialing | active | past_due | paused | canceled
-          currentPeriodEnd: null,  // Timestamp
-          trialEnd: null,          // Timestamp
-          lastInvoiceId: null,     // "in_..."
-          updatedAt: Timestamp.now()
-        },
-
-        // 🚦 App-level access (derived from billing.status)
-        entitlements: {
-          pro: false
-        }
-      }
+      access: {
+        level: "free",
+        updatedAt: Timestamp.now(),
+      },
     });
 
     const phonebook_Builder = collection(users_account_info, "phonebook");
@@ -233,23 +210,22 @@ const createUserAccount = async (userID: string) => {
 };
 
 function DashboardView() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const dispatch = useDispatch();
-  const queryClient = new QueryClient();
   const router = useRouter();
 
   useEffect(() => {
+    if (loading || !user?.uid) return;
+
     const checkForNewUser = async () => {
-      if (user?.uid) {
-        const hasDB = await check_if_user_has_DB(user.uid);
-        if (!hasDB) {
-          await createUserAccount(user.uid);
-          queryClient.invalidateQueries({ queryKey: ['userData', user.uid] });
-        }
+      const hasDB = await check_if_user_has_DB(user.uid);
+      if (!hasDB) {
+        await createUserAccount(user.uid);
       }
     };
+
     checkForNewUser();
-  }, [user, queryClient]);
+  }, [loading, user?.uid]);
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['userData', user?.uid],
@@ -259,7 +235,7 @@ function DashboardView() {
       try {
         let organized_phonebook: { [key: string]: any[] } = {};
 
-        const locate_user = doc(db, "user_info", user.uid);
+        const locate_user = doc(db, "user_info_public", user.uid);
         const accountData = await getDoc(locate_user);
         if (!accountData.exists()) return null;
 
@@ -332,13 +308,14 @@ function DashboardView() {
         const final_userData = {
           settings: accountData.data().settings,
           phonebook: organized_phonebook, // structuredClone not necessary here
-          subscription: accountData.data().subscription.entitlements
         };
 
         dispatch(populateData(final_userData));
         return final_userData;
-      } catch (err) {
-        console.error("ERROR: Tanstack Async Failure", err);
+      } catch (err: any) {
+        if (err?.code !== "permission-denied") {
+          console.error("ERROR: Tanstack Async Failure", err);
+        }
         throw err;
       }
     },
