@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: migrate all services to cloud functions; "secure frontend"
+
 import { Provider } from "react-redux";
 
 import { Button } from '@/components/ui/button';
@@ -20,7 +22,7 @@ import { Loader2, LogOut } from 'lucide-react';
 
 import { db } from "@/lib/firebase";
 
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp } from "@firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "@firebase/firestore";
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
 
 import {
@@ -40,6 +42,8 @@ import "../index.css";
 import { queryClient } from "@/app/queryClient";
 import { populateData } from "@/components/features/dataSlice";
 import { loadStripe } from "@stripe/stripe-js";
+import { createUserAccount } from "../../services/createUserAccount";
+import { test } from "../../services/firebaseMigrate";
 
 const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
 
@@ -180,35 +184,6 @@ function LandingPage() {
   )
 }
 
-const createUserAccount = async (userID: string) => {
-  try {
-    const users_account_info = doc(db, "user_info_public", userID);
-    await setDoc(users_account_info, {
-      settings: {
-        tiersTime: [
-          { name: "1", timeFrame: "1d" },
-          { name: "2", timeFrame: "3d" },
-          { name: "3", timeFrame: "1d" },
-          { name: "4", timeFrame: "1m" },
-          { name: "5", timeFrame: "6m" }
-        ]
-      },
-      access: {
-        level: "free",
-        updatedAt: Timestamp.now(),
-      },
-    });
-
-    const phonebook_Builder = collection(users_account_info, "phonebook");
-    await addDoc(phonebook_Builder, {
-      start: "hello account"
-    });
-
-  } catch (error) {
-    console.error("Error creating user account:", error);
-  }
-};
-
 function DashboardView() {
   const { user, loading, logout } = useAuth();
   const dispatch = useDispatch();
@@ -220,9 +195,12 @@ function DashboardView() {
     const checkForNewUser = async () => {
       const hasDB = await check_if_user_has_DB(user.uid);
       if (!hasDB) {
-        await createUserAccount(user.uid);
+        await createUserAccount();
       }
     };
+
+    // DELETE LOG
+    console.log("USE_EFFECT")
 
     checkForNewUser();
   }, [loading, user?.uid]);
@@ -231,6 +209,9 @@ function DashboardView() {
     queryKey: ['userData', user?.uid],
     queryFn: async () => {
       if (!user?.uid) return null;
+
+      // DELETE LOG
+      console.log("QUERY_FN")
 
       try {
         let organized_phonebook: { [key: string]: any[] } = {};
@@ -241,6 +222,10 @@ function DashboardView() {
 
         const phonebook = collection(locate_user, "phonebook");
         const phonebookEntriesSnap = await getDocs(phonebook);
+
+
+        // DELETE LOG
+        console.log("DOC_IDENT")
 
         // seed tiers from settings
         const tierData = accountData.data()?.settings?.tiersTime;
@@ -263,14 +248,18 @@ function DashboardView() {
             ...data,
             docID: entry.id,
             name: data.name ?? { first: "Data", last: "Error" },
-            lastConvo: {}
+            conversations: {}
           };
 
-          // fetch subcollection: phonebook/{entry.id}/lastConvo
-          const conversationsRef = collection(phonebook, entry.id, "lastConvo");
+          // DELETE LOG
+          console.log("ENTRY_DATA")
+          console.log("The entry data: ", entryData)
+
+          // fetch subcollection: phonebook/{entry.id}/conversations
+          const conversationsRef = collection(phonebook, entry.id, "conversations");
           const conversationsSnap = await getDocs(conversationsRef);
 
-          const lastConvoById = Object.fromEntries(
+          const conversations_ById = Object.fromEntries(
             conversationsSnap.docs.map(d => {
               const convoData = d.data();
               // Ensure the data matches Conversation type
@@ -282,9 +271,12 @@ function DashboardView() {
             })
           );
 
+          // DELETE LOG
+          console.log("FETCH_CONVERSATIONS")
+
           entryData = {
             ...entryData,
-            lastConvo: { ...(entryData.lastConvo ?? {}), ...lastConvoById },
+            conversations: { ...(entryData.conversations ?? {}), ...conversations_ById },
           };
 
           // decide the bucket
@@ -309,6 +301,9 @@ function DashboardView() {
           settings: accountData.data().settings,
           phonebook: organized_phonebook, // structuredClone not necessary here
         };
+
+        // DELETE LOG
+        console.log("FINAL_USER_DATA")
 
         dispatch(populateData(final_userData));
         return final_userData;
@@ -389,13 +384,29 @@ export default function Home() {
     );
   }
 
-  return user ?
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <DashboardView />
-      </Provider>
-    </QueryClientProvider>
-    : <LandingPage />;
+  return (<div>
+    <button onClick={async () => {
+      try {
+        const result = await test({
+          action: "add", package: {
+            one: "one",
+            two: "two"
+          }
+        });
+
+        console.log("Success:", result.data);
+      } catch (err: any) {
+        console.error("Callable error:", err.code, err.message);
+      }
+    }}>Test Button</button>
+    {user ?
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <DashboardView />
+        </Provider>
+      </QueryClientProvider>
+      : <LandingPage />}
+  </div>);
 }
 
 

@@ -1,17 +1,17 @@
-//takes date property from lastConvo objects and returns a simplified date string
+//takes date property from 'conversations' objects and returns a simplified date string
 export function getDateFromDateTime(dateTimeString: string) {
 
-  // Create a Date object from the string
-  const date = new Date(dateTimeString);
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const day = date.getDate() + 1;
+    // Create a Date object from the string
+    const date = new Date(dateTimeString);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const day = date.getDate() + 1;
 
-  if (`${month}/${day}/${year}` == "NaN/NaN/NaN") {
-    return "";
-  }
+    if (`${month}/${day}/${year}` == "NaN/NaN/NaN") {
+        return "";
+    }
 
-  return `${month}/${day}/${year}`;
+    return `${month}/${day}/${year}`;
 }
 
 export const dayChoices = ["1d", "2d", "3d", "4d", "5d", "6d", "1w", "2w", "3w", "1m", "2m", "3m", "4m", "5m", "6m", "u"]

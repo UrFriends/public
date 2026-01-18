@@ -41,11 +41,11 @@ export const add_Conversation = async (UserID: string, person: Person, conversat
       const users_account_info = doc(db, "user_info_public", UserID);
       const phonebookRef = collection(users_account_info, "phonebook");
       const contactRef = doc(phonebookRef, person.docID);
-      const lastConvoRef = collection(contactRef, "lastConvo");
+      const conversations_Ref = collection(contactRef, "conversations");
       // Check to see if we are deleting the original placeholder null conversation
       // OR if user created conversation(s) are already present
       if (person && conversation) {
-        await addDoc(lastConvoRef, conversation).then(() => {
+        await addDoc(conversations_Ref, conversation).then(() => {
           sendNotification(dispatch, { type: "green", message: "The conversation was successfully added" })
         }).catch((error) => {
           console.log(error, "ERROR add_Conversation: There was an error adding the document")
@@ -72,12 +72,12 @@ export const changeProperty_Conversation = async (
     const users_account_info = doc(db, "user_info_public", UserID);
     const phonebookRef = collection(users_account_info, "phonebook");
     const contactRef = doc(phonebookRef, person.docID);
-    const lastConvoRef = collection(contactRef, "lastConvo");
-    const conversationRef = doc(lastConvoRef, conversation.DocID)
+    const conversations_Ref = collection(contactRef, "conversations");
+    const conversationToChange_Ref = doc(conversations_Ref, conversation.DocID)
 
     const changeProperty = async () => {
       try {
-        await updateDoc(conversationRef, {
+        await updateDoc(conversationToChange_Ref, {
           topic: conversation.topic,
           date: conversation.date
         })
@@ -103,12 +103,12 @@ export const delete_Conversation = async (UserID: string, person: Person, conver
     const users_account_info = doc(db, "user_info_public", UserID);
     const phonebookRef = collection(users_account_info, "phonebook");
     const contactRef = doc(phonebookRef, person.docID);
-    const lastConvoRef = collection(contactRef, "lastConvo");
-    const conversationRef = doc(lastConvoRef, conversation_ID)
+    const conversations_Ref = collection(contactRef, "conversations");
+    const conversationToDelete_Ref = doc(conversations_Ref, conversation_ID)
 
     const performDelete = async () => {
       try {
-        await deleteDoc(conversationRef).then(() => {
+        await deleteDoc(conversationToDelete_Ref).then(() => {
           //indicate success
           sendNotification(dispatch, { message: "Conversation successfully deleted", type: "green" })
         }).catch((error) => {
@@ -191,8 +191,8 @@ export const delete_Contact = async (UserID: string, contact_docID: string, disp
     const contactToDelete = doc(db, "user_info_public", UserID, "phonebook", contact_docID);
     const performDelete = async () => {
       try {
-        console.log("TODO: add Document ID for the subcollection of LastConvo")
-        // the lastConvo subcollection will need to have each document individually deleted
+        console.log("TODO: add Document ID for the subcollection of conversations")
+        // the conversations subcollection will need to have each document individually deleted
         await deleteDoc(contactToDelete).then(() => {
           location.reload();
         });

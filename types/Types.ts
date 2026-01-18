@@ -19,7 +19,7 @@ export interface Person {
   user?: string;
   tier?: number | string;
   phoneNumber?: number | string;
-  lastConvo?: Record<string, Conversation>
+  conversations?: Record<string, Conversation>
   docID?: string;
   email?: string;
 }

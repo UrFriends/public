@@ -34,7 +34,7 @@ const ConversationButton = (props: any) => {
           onClick={() => props.handleOpenExpandedContactModal("conversation", props.conversation)}
         >
           <span className="conv-btn-date-span">
-            {Object.keys(props.person.lastConvo).length === 0
+            {Object.keys(props.person.conversations).length === 0
               ? null
               : getDateFromDateTime(props.conversation.date)}
           </span>
@@ -56,7 +56,7 @@ const RecentConversations = (props: RecentConversations__Props) => {
   };
 
   //If !props.conversationArray, then data is still being fetched, or there is no data.
-  //Under default circumstances, if a contact has no conversations, lastConvo[0].date will be null
+  //Under default circumstances, if a contact has no conversations, conversations[0].date will be null
   if (!props.conversationArray || (Array.isArray(props.conversationArray) && props.conversationArray.length === 0)) {
     return null;
   } else if (Array.isArray(props.conversationArray) && props.conversationArray.length > 5) {

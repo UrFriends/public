@@ -133,12 +133,12 @@ function Tier(props: any) {
 
         //put the conversations into an array, making them easier to iterate on in RecentConversations
         let conversationArray: Conversation[] = [];
-        if (person.lastConvo && Object.keys(person.lastConvo).length !== 0) {
-          const keys_of_conversations = Array.from(Object.keys(person.lastConvo));
+        if (person.conversations && Object.keys(person.conversations).length !== 0) {
+          const keys_of_conversations = Array.from(Object.keys(person.conversations));
           keys_of_conversations.forEach((key) => {
-            if (person && person.lastConvo && typeof person.lastConvo[key] == "object") {
+            if (person && person.conversations && typeof person.conversations[key] == "object") {
               const convToPush = {
-                ...person.lastConvo[key],
+                ...person.conversations[key],
                 DocID: key,
               }
               conversationArray.push(convToPush);

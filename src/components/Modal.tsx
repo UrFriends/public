@@ -2,7 +2,6 @@ import { useDispatch } from "react-redux";
 import { clearUnsavedChanges, hideModal } from "./features/modalSlice";
 
 import useEscapeKey from "../hooks/use-escape-key";
-import AddConversationSelectContact from "./modal-components/AddConversationSelectContact";
 import ContactSettings from "./modal-components/ContactSettings";
 import ConversationDetails from "./modal-components/ConversationDetails";
 import ConvoStarters from "./modal-components/ConvoStarters";
@@ -74,7 +73,7 @@ const Modal = (props: Modal__Props) => {
                 X
               </button>
             </div>
-            {modalType == "add-convo-sans-contact" && (<AddConversationSelectContact />)}
+            {/* {modalType == "add-convo-sans-contact" && (<AddConversationSelectContact />)} */}
             {modalType == "random" && <RandomModalComponent />}
             {modalType == "add-contact" && <NewPerson user={props.user} settings={props.data.settings} />}
             {modalType == "we-spoke" && <ReachOut data={props.data} user={props.user} />}

@@ -31,7 +31,6 @@ const NewPerson = (props: NewPerson__Props) => {
       },
       phoneNumber: (form.elements.namedItem("contactPhone") as HTMLInputElement)?.value,
       email: (form.elements.namedItem("contactEmail") as HTMLInputElement)?.value,
-      lastConvo: {},
       user: props.user.uid,
     };
 
