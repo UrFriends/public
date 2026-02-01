@@ -29,7 +29,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
       if (person && person.docID && variables.changeQualifier && variables.keyToChange && variables.change
         && typeof variables.changeQualifier == "string" && typeof variables.keyToChange == "string"
       ) {
-        await changeProperty_Contact(props.user?.uid, person.docID, variables.keyToChange, variables.change);
+        await changeProperty_Contact(person.docID, variables.keyToChange, variables.change);
         return true;
       } else {
         sendNotification(dispatch, { message: "Attempting to submit improperly formatted data", type: "red" });
@@ -120,7 +120,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
             </p>
             <Button variant="destructive" onClick={() => {
               if (props.user?.uid && person?.docID) {
-                delete_Contact(props.user.uid, person.docID, dispatch);
+                delete_Contact(person.docID, dispatch);
               } else {
                 sendNotification(dispatch, { message: "User ID or Contact ID missing", type: "red" });
               }

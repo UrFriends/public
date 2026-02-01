@@ -6,7 +6,7 @@
       "script": "dev",
       "problemMatcher": [],
       "label": "npm: dev",
-      "detail": "next dev --turbopack -p 9002",
+      "detail": "next dev --turbopack -p 5173",
       "runOptions": {
         "runOn": "folderOpen"
       }

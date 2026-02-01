@@ -13,6 +13,7 @@ import {
 } from "@firebase/firestore";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Conversation, Person, tiersTime_Object } from "../types/Types";
+import { contacts_service } from "./firebaseMigrate";
 
 export const check_if_user_has_DB = async (arg1: string | undefined) => {
   if (typeof arg1 == "string") {
@@ -129,76 +130,115 @@ export const delete_Conversation = async (UserID: string, person: Person, conver
 // (close) Conversation services
 
 // Contact services
-export const add_Contact = async (UserID: string, person: Person) => {
+export const add_Contact = async (person: Person) => {
   //add a contact to someone's phonebook
-  try {
-    const users_account_info = doc(db, "user_info_public", UserID);
-    const phonebookRef = collection(users_account_info, "phonebook");
-    const add_Document = await addDoc(phonebookRef, person);
 
-    if (add_Document) {
-      //reload page
-      location.reload();
+  try {
+    const result = await contacts_service({
+      action: "add",
+      payload: {
+        person
+      }
+    });
+
+    if (result) {
       return true;
-    } else {
-      console.log("ERROR: add_Contact firebaseServices Adding document");
-      return false;
     }
-  } catch {
-    console.log("ERROR: add_Contact firebaseServices");
+  } catch (err) {
     return false;
   }
+
+
+  // try {
+  //   const users_account_info = doc(db, "user_info_public", UserID);
+  //   const phonebookRef = collection(users_account_info, "phonebook");
+  //   const add_Document = await addDoc(phonebookRef, person);
+
+  //   if (add_Document) {
+  //     //reload page
+  //     location.reload();
+  //     return true;
+  //   } else {
+  //     console.log("ERROR: add_Contact firebaseServices Adding document");
+  //     return false;
+  //   }
+  // } catch {
+  //   console.log("ERROR: add_Contact firebaseServices");
+  //   return false;
+  // }
 };
 
 export const changeProperty_Contact = async (
-  UserID: string,
   changeQualifier: string,
   propertyToChange: string,
   change: string | number | readonly string[]
 ) => {
-  //change a contact's properties
-  //changeQualifier is the phonebook entr
-  // y's phonebook document ID
-  const changeContact = async () => {
-    try {
-      const contactToChangeRef = doc(db, "user_info_public", UserID, "phonebook", changeQualifier);
-      if (propertyToChange == "first name") {
-        //first name is a nested property in the name property
-        await updateDoc(contactToChangeRef, {
-          "name.first": change
-        })
-      } else if (propertyToChange == "last name") {
-        //last name is a nested property in the name property
-        await updateDoc(contactToChangeRef, {
-          "name.last": change
-        })
-      } else {
-        await updateDoc(contactToChangeRef, {
-          [propertyToChange]: change
-        })
+
+  try {
+    const result = await contacts_service({
+      action: "update",
+      payload: {
+        changeQualifier, propertyToChange, change
       }
-    } catch (err) {
-      console.error("ERROR changeProperty_Contact: changing a contact property in fireBaseServices", err);
+    });
+
+    if (result) {
+      return true;
     }
-  };
-  changeContact();
-  return true;
+  } catch (err) {
+    return false;
+  }
+
+  // //change a contact's properties
+  // //changeQualifier is the phonebook entr
+  // // y's phonebook document ID
+  // // const changeContact = async () => {
+  // //   try {
+  // //     const contactToChangeRef = doc(db, "user_info_public", UserID, "phonebook", changeQualifier);
+  // //     if (propertyToChange == "first name") {
+  // //       //first name is a nested property in the name property
+  // //       await updateDoc(contactToChangeRef, {
+  // //         "name.first": change
+  // //       })
+  // //     } else if (propertyToChange == "last name") {
+  // //       //last name is a nested property in the name property
+  // //       await updateDoc(contactToChangeRef, {
+  // //         "name.last": change
+  // //       })
+  // //     } else {
+  // //       await updateDoc(contactToChangeRef, {
+  // //         [propertyToChange]: change
+  // //       })
+  // //     }
+  // //   } catch (err) {
+  // //     console.error("ERROR changeProperty_Contact: changing a contact property in fireBaseServices", err);
+  // //   }
+  // // };
+  // // changeContact();
+  // return true;
 };
 
-export const delete_Contact = async (UserID: string, contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
+export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a contact
+
   try {
-    const contactToDelete = doc(db, "user_info_public", UserID, "phonebook", contact_docID);
     const performDelete = async () => {
       try {
-        console.log("TODO: add Document ID for the subcollection of conversations")
-        // the conversations subcollection will need to have each document individually deleted
-        await deleteDoc(contactToDelete).then(() => {
-          location.reload();
+
+        const result = await contacts_service({
+          action: "delete",
+          payload: {
+            contact_docID
+          }
         });
+
+        if (result) {
+          return true;
+        }
+
       } catch (error) {
-        console.log("ERROR delete_Contact performDelete failure to delete Contact")
         sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+        return false;
       }
     }
     performDelete();
@@ -207,6 +247,29 @@ export const delete_Contact = async (UserID: string, contact_docID: string, disp
     console.log("ERROR delete_Contact service error ")
     sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
   }
+
+
+
+  // try {
+  //   const contactToDelete = doc(db, "user_info_public", UserID, "phonebook", contact_docID);
+  //   const performDelete = async () => {
+  //     try {
+  //       console.log("TODO: add Document ID for the subcollection of conversations")
+  //       // the conversations subcollection will need to have each document individually deleted
+  //       await deleteDoc(contactToDelete).then(() => {
+  //         location.reload();
+  //       });
+  //     } catch (error) {
+  //       console.log("ERROR delete_Contact performDelete failure to delete Contact")
+  //       sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+  //     }
+  //   }
+  //   performDelete();
+  //   sendNotification(dispatch, { type: "green", message: "Contact successfully deleted" })
+  // } catch (error) {
+  //   console.log("ERROR delete_Contact service error ")
+  //   sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+  // }
 };
 // (close) Contact services
 

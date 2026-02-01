@@ -5,7 +5,6 @@
 import { Provider } from "react-redux";
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
 
 import { useDispatch } from "react-redux";
@@ -17,7 +16,6 @@ import Phonebook from "../components/Phonebook";
 
 import { store } from "./store";
 
-import { GoogleIcon } from '@/components/icons/google-icon';
 import { Loader2, LogOut } from 'lucide-react';
 
 import { db } from "@/lib/firebase";
@@ -41,44 +39,7 @@ import "../index.css";
 // Example usage in DashboardView or LandingPage
 import { queryClient } from "@/app/queryClient";
 import { populateData } from "@/components/features/dataSlice";
-import { loadStripe } from "@stripe/stripe-js";
 import { createUserAccount } from "../../services/createUserAccount";
-import { test } from "../../services/firebaseMigrate";
-
-const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
-
-async function handleSubscribe(email: string) {
-  const priceId = "price_12345"; // Replace with your actual price ID
-  const res = await fetch("/api/stripe/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, priceId }),
-  });
-  const { sessionId } = await res.json();
-  const stripe = await stripePromise;
-  await stripe?.redirectToCheckout({ sessionId });
-}
-
-// Erasure incoming
-function LoginView() {
-  const { loginWithGoogle } = useAuth();
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-sm shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">UrFriends!</CardTitle>
-          <CardDescription>Sign in</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <Button variant="outline" className="w-full" onClick={loginWithGoogle}>
-            <GoogleIcon className="mr-2 h-5 w-5 fill-current" />
-            Continue with Google
-          </Button>
-        </CardContent>
-      </Card>
-    </main>
-  );
-}
 
 export const HeaderComponent = (props: HeaderComponent__Props) => {
   const router = useRouter();
@@ -95,10 +56,37 @@ export const HeaderComponent = (props: HeaderComponent__Props) => {
           <LogOut className="h-s5 w-5" />
         </Button>
       </header>
+
       {props.data && < Button onClick={() => router.push("/subscribe")}>Subscribe</Button >}
     </>
   )
 }
+
+import { getFunctions, httpsCallable } from "@firebase/functions";
+
+const call_api = async (userId: string) => {
+
+  try {
+    console.log("LOG MSG 1")
+    const functions = getFunctions();
+    console.log("LOG MSG 2")
+    const service_contacts = httpsCallable(functions, "service_contacts");
+    console.log("LOG MSG 3")
+
+    const result = await service_contacts({
+      userId: userId,
+      action: "conversations-update",
+      name: "Alice"
+    });
+
+
+    console.log("LOG MSG 4")
+    console.log("The result of call_api: ", result.data);
+  } catch (err) {
+    console.error("ERROR ON call_api", err)
+  }
+}
+
 
 
 function LandingPage() {
@@ -109,6 +97,7 @@ function LandingPage() {
       {/* Hero Section */}
       <header className="flex flex-col items-center justify-center py-20 px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-extrabold text-blue-700 mb-4">UrFriends!</h1>
+
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">Create and nurture relationships with the people who matter to you.</p>
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">AI-powered tools designed to help your network flourish.</p>
         <div className="flex flex-row gap-4 justify-center">
@@ -356,6 +345,7 @@ function DashboardView() {
         <RandomButtonBar />
 
         <p></p>
+        {user?.uid && <button onClick={() => call_api(user.uid)}>CALL API</button>}
         <LinkBar />
 
         {/* {user && typeof user.email === "string" && typeof user.uid === "string" &&
@@ -385,20 +375,6 @@ export default function Home() {
   }
 
   return (<div>
-    <button onClick={async () => {
-      try {
-        const result = await test({
-          action: "add", package: {
-            one: "one",
-            two: "two"
-          }
-        });
-
-        console.log("Success:", result.data);
-      } catch (err: any) {
-        console.error("Callable error:", err.code, err.message);
-      }
-    }}>Test Button</button>
     {user ?
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>

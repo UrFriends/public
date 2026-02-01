@@ -22,9 +22,6 @@ function StripeCheckoutButton(props: StripeCheckoutButton__Props) {
     </div>)
   }
 
-  // https://buy.stripe.com/test_28E00j8WE0Oy3D03i5fEk00?client_reference_id=
-  // https://buy.stripe.com/3cI5kD6Owbtcb5s05TfEk01?client_reference_id=
-
   return (
     <button
       onClick={() =>

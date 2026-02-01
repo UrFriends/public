@@ -37,7 +37,7 @@ const NewPerson = (props: NewPerson__Props) => {
     //call async service
     const callService = async () => {
       try {
-        const result = await add_Contact(props.user.uid, newPerson);
+        const result = await add_Contact(newPerson);
         if (!result) {
           //dispatch a failure notifications
           console.log("ERROR with result in callService, NewPerson")
