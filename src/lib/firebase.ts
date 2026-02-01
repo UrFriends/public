@@ -19,12 +19,18 @@ const app: FirebaseApp = getApps().length
   : initializeApp(firebaseConfig);
 
 // 🔑 App Check
-initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider(
-    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
-  ),
-  isTokenAutoRefreshEnabled: true,
-});
+// Only run App Check in the browser, and only once
+if (typeof window !== "undefined") {
+  if (!(window as any)._appCheckInitialized) {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
+    (window as any)._appCheckInitialized = true;
+  }
+}
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
