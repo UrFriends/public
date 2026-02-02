@@ -31,9 +31,11 @@ const ContactSettings = (props: ContactSettings__Props) => {
       ) {
         const callService = async () => {
           try {
-            const update_person = {
-              ...person
-            }
+            // const update_person = {
+            //   ...person
+            // }
+
+            let update_person = structuredClone(person)
 
             if (variables.keyToChange == "name.first") {
               update_person.name.first = variables.change as string
