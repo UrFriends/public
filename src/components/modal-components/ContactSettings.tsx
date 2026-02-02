@@ -29,7 +29,26 @@ const ContactSettings = (props: ContactSettings__Props) => {
       if (person && person.docID && variables.changeQualifier && variables.keyToChange && variables.change
         && typeof variables.changeQualifier == "string" && typeof variables.keyToChange == "string"
       ) {
-        await changeProperty_Contact(person.docID, variables.keyToChange, variables.change);
+        const callService = async () => {
+          try {
+            const result = await changeProperty_Contact(person.docID as string, variables.keyToChange, variables.change);
+            // if (!result) {
+            //dispatch a failure notifications
+            // console.log("ERROR with result in callService, NewPerson")
+            // return false;
+            // } else {
+            //update the store and the UI
+            //dispatch success notification
+            // dispatch(addContact(newPerson))
+            // console.log("TODO: establish notification service functionality for adding contact")
+            // return true;
+            // }
+          } catch (error) {
+            console.log(error, "ERROR callService in ContactSettings")
+            // return false;
+          }
+        }
+        callService();
         return true;
       } else {
         sendNotification(dispatch, { message: "Attempting to submit improperly formatted data", type: "red" });

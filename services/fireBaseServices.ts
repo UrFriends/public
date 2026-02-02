@@ -195,7 +195,7 @@ export const add_Contact = async (person: Person) => {
 
 export const changeProperty_Contact = async (
   changeQualifier: string,
-  propertyToChange: string,
+  propertyToChange: string | number,
   change: string | number | readonly string[]
 ) => {
 
