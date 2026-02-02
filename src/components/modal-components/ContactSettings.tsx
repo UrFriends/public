@@ -35,11 +35,11 @@ const ContactSettings = (props: ContactSettings__Props) => {
               ...person
             }
 
-            if (variables.keyToChange == "first name") {
+            if (variables.keyToChange == "name.first") {
               update_person.name.first = variables.change as string
             }
 
-            if (variables.keyToChange == "last name") {
+            if (variables.keyToChange == "name.last") {
               update_person.name.last = variables.change as string
             }
 
