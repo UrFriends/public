@@ -90,9 +90,9 @@ const ContactSettings = (props: ContactSettings__Props) => {
         <h2>Contact Settings</h2>
 
         <p>First Name: </p>
-        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.first} valueSwitch={"first name"} />
+        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.first} valueSwitch={"name.first"} />
         <p>Last Name: </p>
-        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.last} valueSwitch={"last name"} />
+        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.last} valueSwitch={"name.last"} />
         {person.email && typeof person.email == "string" && <>
           <p>Email: </p>
           <ChangeableInput mutation={changePersonMutation} valueProp={person.email} valueSwitch={"email"} />
