@@ -197,12 +197,15 @@ export const changeProperty_Contact = async (
   data: Person
 ) => {
 
+  let change_data = structuredClone(data);
+  delete change_data.docID;
+
   try {
     const result = await service_contacts({
       action: "contacts-update",
       payload: {
         contactId: data.id,
-        data
+        data: change_data
       }
     });
 
