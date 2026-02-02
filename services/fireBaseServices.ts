@@ -194,7 +194,7 @@ export const add_Contact = async (person: Person) => {
 };
 
 export const changeProperty_Contact = async (
-  changeQualifier: string,
+  contactId: string,
   propertyToChange: string | number,
   change: string | number | readonly string[]
 ) => {
@@ -203,7 +203,10 @@ export const changeProperty_Contact = async (
     const result = await service_contacts({
       action: "contacts-update",
       payload: {
-        changeQualifier, propertyToChange, change
+        contactId,
+        data: {
+          propertyToChange, change
+        }
       }
     });
 
