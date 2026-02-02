@@ -139,7 +139,7 @@ function Tier(props: any) {
             if (person && person.conversations && typeof person.conversations[key] == "object") {
               const convToPush = {
                 ...person.conversations[key],
-                DocID: key,
+                id: key,
               }
               conversationArray.push(convToPush);
             }

@@ -26,7 +26,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
   const changePersonMutation = useMutation({
     mutationFn: async (variables: { changeQualifier: string | number, keyToChange: string | number, change: string | number }) => {
       // changeQualifier is the phonebook entry's phonebook document ID
-      if (person && person.docID && variables.changeQualifier && variables.keyToChange && variables.change
+      if (person && person.id && variables.changeQualifier && variables.keyToChange && variables.change
         && typeof variables.changeQualifier == "string" && typeof variables.keyToChange == "string"
       ) {
         const callService = async () => {
@@ -36,7 +36,6 @@ const ContactSettings = (props: ContactSettings__Props) => {
             // }
 
             let update_person = structuredClone(person)
-            delete update_person.docID;
 
             if (variables.keyToChange == "name.first") {
               update_person.name.first = variables.change as string
@@ -137,7 +136,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
         </>
       }
 
-      {person && person.docID && <div className="p-2">
+      {person && person.id && <div className="p-2">
         {!showConfirm && <Button variant="destructive" onClick={() => setShowConfirm(true)}>
           Delete {person?.name.first}
         </Button>}
@@ -147,14 +146,14 @@ const ContactSettings = (props: ContactSettings__Props) => {
 
 
 
-        {showConfirm && person && person.docID &&
+        {showConfirm && person && person.id &&
           <div className="mt-2">
             <p>
               You are about to delete all information and conversations for {person?.name.first}
             </p>
             <Button variant="destructive" onClick={() => {
-              if (props.user?.uid && person?.docID) {
-                delete_Contact(person.docID, dispatch);
+              if (props.user?.uid && person?.id) {
+                delete_Contact(person.id, dispatch);
               } else {
                 sendNotification(dispatch, { message: "User ID or Contact ID missing", type: "red" });
               }

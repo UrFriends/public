@@ -13,7 +13,7 @@ import {
 const ConversationDetails = (props: any) => {
   const unsavedChanges = useAppSelector((state) => state.modal.unsavedChanges);
   const person: Person = useAppSelector((state) => state.modal.person);
-  const conversation = useAppSelector((state) => state.modal.topic) as { topic: string; date?: string; docID?: string; DocID?: string } | null;
+  const conversation = useAppSelector((state) => state.modal.topic) as { topic: string; date?: string; id?: string; } | null;
 
   const [unsavedConversation, setUnsavedConversation] = useState(
     conversation ? conversation.topic : ""
@@ -63,7 +63,7 @@ const ConversationDetails = (props: any) => {
       const updatedConversation = {
         topic: unsavedConversation,
         date: unsavedDate !== undefined ? unsavedDate : null,
-        DocID: conversation.DocID
+        id: conversation.id
       }
       try {
         if (conversation) {
@@ -120,16 +120,16 @@ const ConversationDetails = (props: any) => {
           Delete This Conversation
         </Button>
       </>}
-      {showConfirm && person && person.docID &&
+      {showConfirm && person && person.id &&
         <div className="mt-2">
           <p>
             You are attempting to delete this conversation
           </p>
           <Button variant="destructive" onClick={() => {
-            if (props.user?.uid && person?.docID) {
+            if (props.user?.uid && person?.id) {
               const callService = async () => {
                 try {
-                  await delete_Conversation(props.user.uid, person, (conversation && conversation.DocID) ? conversation.DocID : "", dispatch)
+                  await delete_Conversation(props.user.uid, person, (conversation && conversation.id) ? conversation.id : "", dispatch)
                 } catch (err) {
                   console.error(err);
                   sendNotification(dispatch, { message: "ERROR ConversationDetails: calling service to delete conversation", type: "red" })

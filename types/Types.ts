@@ -20,7 +20,6 @@ export interface Person {
   tier?: number | string;
   phoneNumber?: number | string;
   conversations?: Record<string, Conversation>
-  docID?: string;
   email?: string;
 }
 
@@ -29,7 +28,7 @@ export type ISODateString = string;
 export interface Conversation {
   date: ISODateString | null;
   topic: string | null;
-  DocID?: string;
+  id?: string;
 }
 
 export interface Modal__Props {

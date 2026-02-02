@@ -47,7 +47,7 @@ export const add_Conversation = async (UserID: string, person: Person, conversat
         userId: UserID,
         action: "conversations-add",
         payload: {
-          contactId: person.docID,
+          contactId: person.id,
           conversation
         }
       });
@@ -71,8 +71,8 @@ export const changeProperty_Conversation = async (
         userId: UserID,
         action: "conversations-update",
         payload: {
-          contactId: person.docID,
-          conversationId: conversation.DocID,
+          contactId: person.id,
+          conversationId: conversation.id,
           conversation
         }
       });
@@ -119,7 +119,7 @@ export const delete_Conversation = async (UserID: string, person: Person, conver
         userId: UserID,
         action: "conversations-update",
         payload: {
-          contactId: person.docID,
+          contactId: person.id,
           conversationId: conversation_ID
         }
       });
@@ -198,7 +198,6 @@ export const changeProperty_Contact = async (
 ) => {
 
   let change_data = structuredClone(data);
-  delete change_data.docID;
 
   try {
     const result = await service_contacts({

@@ -10,7 +10,6 @@ const default_emptyPerson = {
   tier: "",
   phoneNumber: "",
   conversations: {},
-  docID: "",
   email: "",
 }
 

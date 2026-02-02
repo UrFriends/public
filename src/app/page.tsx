@@ -236,7 +236,7 @@ function DashboardView() {
 
           let entryData: Person = {
             ...data,
-            docID: entry.id,
+            id: entry.id,
             name: data.name ?? { first: "Data", last: "Error" },
             conversations: {}
           };
