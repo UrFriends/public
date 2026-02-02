@@ -2,7 +2,6 @@ import { sendNotification } from "@/hooks/sendNotification";
 import { db } from "@/lib/firebase";
 
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -11,9 +10,13 @@ import {
   updateDoc,
   writeBatch
 } from "@firebase/firestore";
+import { getFunctions, httpsCallable } from "@firebase/functions";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Conversation, Person, tiersTime_Object } from "../types/Types";
 import { contacts_service } from "./firebaseMigrate";
+
+const functions = getFunctions();
+const service_contacts = httpsCallable(functions, "service_contacts");
 
 export const check_if_user_has_DB = async (arg1: string | undefined) => {
   if (typeof arg1 == "string") {
@@ -39,26 +42,41 @@ export const add_Conversation = async (UserID: string, person: Person, conversat
 ) => {
   if (person) {
     try {
-      const users_account_info = doc(db, "user_info_public", UserID);
-      const phonebookRef = collection(users_account_info, "phonebook");
-      const contactRef = doc(phonebookRef, person.docID);
-      const conversations_Ref = collection(contactRef, "conversations");
-      // Check to see if we are deleting the original placeholder null conversation
-      // OR if user created conversation(s) are already present
-      if (person && conversation) {
-        await addDoc(conversations_Ref, conversation).then(() => {
-          sendNotification(dispatch, { type: "green", message: "The conversation was successfully added" })
-        }).catch((error) => {
-          console.log(error, "ERROR add_Conversation: There was an error adding the document")
-          sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error adding the document" })
-        })
-      } else {
-        sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: The data was improperly formatted" })
-      }
-    } catch (e) {
-      console.error("ERROR add_Conversation: adding document: ", e);
-      sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error locating your user information" })
+
+      const result = await service_contacts({
+        userId: UserID,
+        action: "conversations-add",
+        payload: {
+          contactId: person.docID,
+          conversation
+        }
+      });
+
+    } catch (err) {
+      console.error("ERROR ON call_api", err)
     }
+
+    // try {
+    //   const users_account_info = doc(db, "user_info_public", UserID);
+    //   const phonebookRef = collection(users_account_info, "phonebook");
+    //   const contactRef = doc(phonebookRef, person.docID);
+    //   const conversations_Ref = collection(contactRef, "conversations");
+    //   // Check to see if we are deleting the original placeholder null conversation
+    //   // OR if user created conversation(s) are already present
+    //   if (person && conversation) {
+    //     await addDoc(conversations_Ref, conversation).then(() => {
+    //       sendNotification(dispatch, { type: "green", message: "The conversation was successfully added" })
+    //     }).catch((error) => {
+    //       console.log(error, "ERROR add_Conversation: There was an error adding the document")
+    //       sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error adding the document" })
+    //     })
+    //   } else {
+    //     sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: The data was improperly formatted" })
+    //   }
+    // } catch (e) {
+    //   console.error("ERROR add_Conversation: adding document: ", e);
+    //   sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error locating your user information" })
+    // }
   }
 };
 

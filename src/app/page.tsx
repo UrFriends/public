@@ -76,10 +76,8 @@ const call_api = async (userId: string) => {
     const result = await service_contacts({
       userId: userId,
       action: "conversations-update",
-      name: "Alice",
       payload: {
-        data1: "one",
-        data2: "two"
+        name: "Alice",
       }
     });
 
