@@ -201,7 +201,7 @@ export const changeProperty_Contact = async (
     const result = await service_contacts({
       action: "contacts-update",
       payload: {
-        contactId: data.docID,
+        contactId: data.id,
         data
       }
     });
