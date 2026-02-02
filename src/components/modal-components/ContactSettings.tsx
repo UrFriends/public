@@ -32,9 +32,17 @@ const ContactSettings = (props: ContactSettings__Props) => {
         const callService = async () => {
           try {
             const update_person = {
-              ...person,
-              [`${variables.keyToChange}`]: variables.change
+              ...person
             }
+
+            if (variables.keyToChange == "first name") {
+              update_person.name.first = variables.change as string
+            }
+
+            if (variables.keyToChange == "last name") {
+              update_person.name.last = variables.change as string
+            }
+
             const result = await changeProperty_Contact(update_person);
             // if (!result) {
             //dispatch a failure notifications
