@@ -36,6 +36,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
             // }
 
             let update_person = structuredClone(person)
+            delete update_person.docID;
 
             if (variables.keyToChange == "name.first") {
               update_person.name.first = variables.change as string
