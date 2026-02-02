@@ -66,7 +66,6 @@ export const changeProperty_Conversation = async (
 ) => {
   //change a given property on a contact
 
-
   if (person) {
     try {
       const result = await service_conversations({
@@ -74,6 +73,7 @@ export const changeProperty_Conversation = async (
         action: "conversations-update",
         payload: {
           contactId: person.docID,
+          conversationId: conversation.DocID,
           conversation
         }
       });
@@ -205,7 +205,7 @@ export const changeProperty_Contact = async (
 
   try {
     const result = await contacts_service({
-      action: "update",
+      action: "contacts-update",
       payload: {
         changeQualifier, propertyToChange, change
       }
@@ -255,7 +255,7 @@ export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<U
       try {
 
         const result = await contacts_service({
-          action: "delete",
+          action: "contacts-delete",
           payload: {
             contact_docID
           }
