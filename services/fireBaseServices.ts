@@ -166,7 +166,7 @@ export const add_Contact = async (person: Person) => {
     const result = await contacts_service({
       action: "contacts-add",
       payload: {
-        person
+        contact: person
       }
     });
 
