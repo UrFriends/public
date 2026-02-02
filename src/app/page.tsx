@@ -346,7 +346,6 @@ function DashboardView() {
         <RandomButtonBar />
 
         <p></p>
-        {user?.uid && <button onClick={() => call_api(user.uid)}>CALL API</button>}
         <LinkBar />
 
         {/* {user && typeof user.email === "string" && typeof user.uid === "string" &&

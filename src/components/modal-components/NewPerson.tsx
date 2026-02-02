@@ -5,12 +5,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { sendNotification } from "@/hooks/sendNotification";
 import { FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import { add_Contact } from "../../../services/fireBaseServices";
 import { NewPerson__Props } from "../../../types/Types";
-import { addContact } from "../features/dataSlice";
 import { Button } from "../ui/button";
 
 
@@ -38,25 +36,26 @@ const NewPerson = (props: NewPerson__Props) => {
     const callService = async () => {
       try {
         const result = await add_Contact(newPerson);
-        if (!result) {
-          //dispatch a failure notifications
-          console.log("ERROR with result in callService, NewPerson")
-          return false;
-        } else {
-          //update the store and the UI
-          //dispatch success notification
-          dispatch(addContact(newPerson))
-          console.log("TODO: establish notification service functionality for adding contact")
-          return true;
-        }
+        // if (!result) {
+        //dispatch a failure notifications
+        // console.log("ERROR with result in callService, NewPerson")
+        // return false;
+        // } else {
+        //update the store and the UI
+        //dispatch success notification
+        // dispatch(addContact(newPerson))
+        // console.log("TODO: establish notification service functionality for adding contact")
+        // return true;
+        // }
       } catch (error) {
         console.log(error, "ERROR callService in NewPerson")
-        return false;
+        // return false;
       }
     }
-    if (!callService()) {
-      sendNotification(dispatch, { message: "the data submitted was invalid", type: "red" })
-    }
+    callService();
+    // if (!callService()) {
+    //   sendNotification(dispatch, { message: "the data submitted was invalid", type: "red" })
+    // }
   }
 
   //render

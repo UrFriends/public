@@ -161,21 +161,18 @@ export const delete_Conversation = async (UserID: string, person: Person, conver
 export const add_Contact = async (person: Person) => {
   //add a contact to someone's phonebook
 
-  try {
-    const result = await service_contacts({
-      action: "contacts-add",
-      payload: {
-        contact: person
-      }
-    });
-
-    if (result) {
-      return true;
+  if (person) {
+    try {
+      const result = await service_contacts({
+        action: "contacts-add",
+        payload: {
+          contact: person
+        }
+      });
+    } catch (err) {
+      console.error("ERROR delete_Conversation FE", err)
     }
-  } catch (err) {
-    return false;
   }
-
 
   // try {
   //   const users_account_info = doc(db, "user_info_public", UserID);
