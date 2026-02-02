@@ -12,7 +12,6 @@ import {
 import { getFunctions, httpsCallable } from "@firebase/functions";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Conversation, Person, tiersTime_Object } from "../types/Types";
-import { contacts_service } from "./firebaseMigrate";
 
 const functions = getFunctions();
 const service_contacts = httpsCallable(functions, "service_contacts");
@@ -163,7 +162,7 @@ export const add_Contact = async (person: Person) => {
   //add a contact to someone's phonebook
 
   try {
-    const result = await contacts_service({
+    const result = await service_contacts({
       action: "contacts-add",
       payload: {
         contact: person
@@ -204,7 +203,7 @@ export const changeProperty_Contact = async (
 ) => {
 
   try {
-    const result = await contacts_service({
+    const result = await service_contacts({
       action: "contacts-update",
       payload: {
         changeQualifier, propertyToChange, change
@@ -254,7 +253,7 @@ export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<U
     const performDelete = async () => {
       try {
 
-        const result = await contacts_service({
+        const result = await service_contacts({
           action: "contacts-delete",
           payload: {
             contact_docID
