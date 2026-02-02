@@ -31,7 +31,11 @@ const ContactSettings = (props: ContactSettings__Props) => {
       ) {
         const callService = async () => {
           try {
-            const result = await changeProperty_Contact(person.docID as string, variables.keyToChange, variables.change);
+            const update_person = {
+              ...person,
+              [`${variables.keyToChange}`]: variables.change
+            }
+            const result = await changeProperty_Contact(update_person);
             // if (!result) {
             //dispatch a failure notifications
             // console.log("ERROR with result in callService, NewPerson")

@@ -194,19 +194,15 @@ export const add_Contact = async (person: Person) => {
 };
 
 export const changeProperty_Contact = async (
-  contactId: string,
-  propertyToChange: string | number,
-  change: string | number | readonly string[]
+  data: Person
 ) => {
 
   try {
     const result = await service_contacts({
       action: "contacts-update",
       payload: {
-        contactId,
-        data: {
-          propertyToChange, change
-        }
+        contactId: data.docID,
+        data
       }
     });
 
