@@ -39,11 +39,14 @@ const ContactSettings = (props: ContactSettings__Props) => {
 
             if (variables.keyToChange == "name.first") {
               update_person.name.first = variables.change as string
+            } else if (variables.keyToChange == "name.last") {
+              update_person.name.last = variables.change as string
+            } else {
+              const key = variables.keyToChange as keyof Person;
+              (update_person as any)[key] = variables.change;
             }
 
-            if (variables.keyToChange == "name.last") {
-              update_person.name.last = variables.change as string
-            }
+
 
             const result = await changeProperty_Contact(update_person);
             // if (!result) {
