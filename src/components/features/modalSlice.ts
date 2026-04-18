@@ -1,17 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const default_emptyPerson = {
-      name: {
-        first: "",
-        last: "",
-      },
-      id: "",
-      user: "",
-      tier:   "",
-      phoneNumber:   "",
-      lastConvo: {},
-      docID: "",
-      email: "",
+  name: {
+    first: "",
+    last: "",
+  },
+  id: "",
+  user: "",
+  tier: "",
+  phoneNumber: "",
+  conversations: {},
+  email: "",
 }
 
 

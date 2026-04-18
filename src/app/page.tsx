@@ -1,9 +1,10 @@
 "use client";
 
+// TODO: migrate all services to cloud functions; "secure frontend"
+
 import { Provider } from "react-redux";
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
 
 import { useDispatch } from "react-redux";
@@ -15,94 +16,89 @@ import Phonebook from "../components/Phonebook";
 
 import { store } from "./store";
 
-import { GoogleIcon } from '@/components/icons/google-icon';
 import { Loader2, LogOut } from 'lucide-react';
 
 import { db } from "@/lib/firebase";
 
-import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "@firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "@firebase/firestore";
 import { check_if_user_has_DB } from "../../services/fireBaseServices";
 
 import {
-  QueryClient,
   QueryClientProvider,
   useQuery
 } from '@tanstack/react-query';
 
 
 import LinkBar from "@/components/LinkBar";
-import { populateData } from "@/components/features/dataSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Conversation, HeaderComponent__Props, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
 import "../index.css";
 
-const queryClient = new QueryClient()
-
 // Example usage in DashboardView or LandingPage
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe("pk_live_DgCt9ErbMG0BTGdvybP8Psim00Ru4euPq6"); // Use your publishable key
-
-async function handleSubscribe(email: string) {
-  const priceId = "price_12345"; // Replace with your actual price ID
-  const res = await fetch("/api/stripe/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, priceId }),
-  });
-  const { sessionId } = await res.json();
-  const stripe = await stripePromise;
-  await stripe?.redirectToCheckout({ sessionId });
-}
-
-// Erasure incoming
-function LoginView() {
-  const { loginWithGoogle } = useAuth();
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-sm shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">UrFriends!</CardTitle>
-          <CardDescription>Sign in</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <Button variant="outline" className="w-full" onClick={loginWithGoogle}>
-            <GoogleIcon className="mr-2 h-5 w-5 fill-current" />
-            Continue with Google
-          </Button>
-
-        </CardContent>
-      </Card>
-    </main>
-  );
-}
+import { queryClient } from "@/app/queryClient";
+import { populateData } from "@/components/features/dataSlice";
+import { createUserAccount } from "../../services/createUserAccount";
 
 export const HeaderComponent = (props: HeaderComponent__Props) => {
+  const router = useRouter();
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
-      <h1 className="text-lg font-semibold text-foreground">
-        {"UrFriends! "}
-        {props.displayName && <>
-          Hello, {props.displayName || 'User'}
-        </>}
-      </h1>
-      <Button variant="ghost" size="icon" onClick={props.logout} aria-label="Logout">
-        <LogOut className="h-s5 w-5" />
-      </Button>
-    </header>
+    <>
+      <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-6">
+        <h1 className="text-lg font-semibold text-foreground">
+          {"UrFriends! "}
+          {props.displayName && <>
+            Hello, {props.displayName || 'User'}
+          </>}
+        </h1>
+        <Button variant="ghost" size="icon" onClick={props.logout} aria-label="Logout">
+          <LogOut className="h-s5 w-5" />
+        </Button>
+      </header>
+
+      {props.data && < Button onClick={() => router.push("/subscribe")}>Subscribe</Button >}
+    </>
   )
 }
+
+import { getFunctions, httpsCallable } from "@firebase/functions";
+
+const call_api = async (userId: string) => {
+
+  try {
+    console.log("LOG MSG 1")
+    const functions = getFunctions();
+    console.log("LOG MSG 2")
+    const service_contacts = httpsCallable(functions, "service_contacts");
+    console.log("LOG MSG 3")
+
+    const result = await service_contacts({
+      userId: userId,
+      action: "conversations-update",
+      payload: {
+        name: "Alice",
+      }
+    });
+
+    console.log("LOG MSG 4")
+    console.log("The result of call_api: ", result.data);
+  } catch (err) {
+    console.error("ERROR ON call_api", err)
+  }
+}
+
 
 
 function LandingPage() {
   const router = useRouter();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
       {/* Hero Section */}
       <header className="flex flex-col items-center justify-center py-20 px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-extrabold text-blue-700 mb-4">UrFriends!</h1>
+
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">Create and nurture relationships with the people who matter to you.</p>
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl">AI-powered tools designed to help your network flourish.</p>
         <div className="flex flex-row gap-4 justify-center">
@@ -178,69 +174,48 @@ function LandingPage() {
   )
 }
 
-const createUserAccount = async (userID: string) => {
-  try {
-    const users_account_info = doc(db, "user_info", userID);
-    await setDoc(users_account_info, {
-      settings: {
-        tiersTime: [
-          { name: "1", timeFrame: "1d" },
-          { name: "2", timeFrame: "3d" },
-          { name: "3", timeFrame: "1d" },
-          { name: "4", timeFrame: "1m" },
-          { name: "5", timeFrame: "6m" }
-        ]
-      },
-      subscription: {
-        active: false,
-        stripeCustomerId: "",
-        currentPeriodEnd: "",
-      }
-    });
-
-    const phonebook_Builder = collection(users_account_info, "phonebook");
-    await addDoc(phonebook_Builder, {
-      start: "hello account"
-    });
-
-  } catch (error) {
-    console.error("Error creating user account:", error);
-  }
-};
-
 function DashboardView() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const dispatch = useDispatch();
-  const queryClient = new QueryClient();
   const router = useRouter();
 
   useEffect(() => {
+    if (loading || !user?.uid) return;
+
     const checkForNewUser = async () => {
-      if (user?.uid) {
-        const hasDB = await check_if_user_has_DB(user.uid);
-        if (!hasDB) {
-          await createUserAccount(user.uid);
-          queryClient.invalidateQueries({ queryKey: ['userData', user.uid] });
-        }
+      const hasDB = await check_if_user_has_DB(user.uid);
+      if (!hasDB) {
+        await createUserAccount();
       }
     };
+
+    // DELETE LOG
+    console.log("USE_EFFECT")
+
     checkForNewUser();
-  }, [user, queryClient]);
+  }, [loading, user?.uid]);
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['userData', user?.uid],
     queryFn: async () => {
       if (!user?.uid) return null;
 
+      // DELETE LOG
+      console.log("QUERY_FN")
+
       try {
         let organized_phonebook: { [key: string]: any[] } = {};
 
-        const locate_user = doc(db, "user_info", user.uid);
+        const locate_user = doc(db, "user_info_public", user.uid);
         const accountData = await getDoc(locate_user);
         if (!accountData.exists()) return null;
 
         const phonebook = collection(locate_user, "phonebook");
         const phonebookEntriesSnap = await getDocs(phonebook);
+
+
+        // DELETE LOG
+        console.log("DOC_IDENT")
 
         // seed tiers from settings
         const tierData = accountData.data()?.settings?.tiersTime;
@@ -261,16 +236,20 @@ function DashboardView() {
 
           let entryData: Person = {
             ...data,
-            docID: entry.id,
+            id: entry.id,
             name: data.name ?? { first: "Data", last: "Error" },
-            lastConvo: {}
+            conversations: {}
           };
 
-          // fetch subcollection: phonebook/{entry.id}/lastConvo
-          const conversationsRef = collection(phonebook, entry.id, "lastConvo");
+          // DELETE LOG
+          console.log("ENTRY_DATA")
+          console.log("The entry data: ", entryData)
+
+          // fetch subcollection: phonebook/{entry.id}/conversations
+          const conversationsRef = collection(phonebook, entry.id, "conversations");
           const conversationsSnap = await getDocs(conversationsRef);
 
-          const lastConvoById = Object.fromEntries(
+          const conversations_ById = Object.fromEntries(
             conversationsSnap.docs.map(d => {
               const convoData = d.data();
               // Ensure the data matches Conversation type
@@ -282,9 +261,12 @@ function DashboardView() {
             })
           );
 
+          // DELETE LOG
+          console.log("FETCH_CONVERSATIONS")
+
           entryData = {
             ...entryData,
-            lastConvo: { ...(entryData.lastConvo ?? {}), ...lastConvoById },
+            conversations: { ...(entryData.conversations ?? {}), ...conversations_ById },
           };
 
           // decide the bucket
@@ -308,13 +290,17 @@ function DashboardView() {
         const final_userData = {
           settings: accountData.data().settings,
           phonebook: organized_phonebook, // structuredClone not necessary here
-          subscription: accountData.data().subscription
         };
+
+        // DELETE LOG
+        console.log("FINAL_USER_DATA")
 
         dispatch(populateData(final_userData));
         return final_userData;
-      } catch (err) {
-        console.error("ERROR: Tanstack Async Failure", err);
+      } catch (err: any) {
+        if (err?.code !== "permission-denied") {
+          console.error("ERROR: Tanstack Async Failure", err);
+        }
         throw err;
       }
     },
@@ -328,10 +314,9 @@ function DashboardView() {
           <LogOut className="h-s5 w-5" />
         </Button></>
     )
+  } else {
+    console.log("The data in dashboard ", data)
   }
-  // } else {
-  //   console.log("NODATA", "NODATA")
-  // }
 
   // if (isPending) {
   //   console.log(isPending, "data55")
@@ -352,16 +337,14 @@ function DashboardView() {
   // }
 
 
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <HeaderComponent displayName={user?.displayName} logout={logout} />
+      <HeaderComponent displayName={user?.displayName} logout={logout} data={data} />
       <main className="">
         <Notification />
         <Modal user={user} data={data} />
         <RandomButtonBar />
-        {!data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>}
-        {data.subscription.active && <div>You are a subscriber!</div>}
+
         <p></p>
         <LinkBar />
 
@@ -378,6 +361,10 @@ function DashboardView() {
 export default function Home() {
   const { user, loading } = useAuth();
 
+  if (user) {
+    console.log("User on Home: ", user)
+  }
+
   if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
@@ -387,14 +374,15 @@ export default function Home() {
     );
   }
 
-
-  return user ?
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <DashboardView />
-      </Provider>
-    </QueryClientProvider>
-    : <LandingPage />;
+  return (<div>
+    {user ?
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <DashboardView />
+        </Provider>
+      </QueryClientProvider>
+      : <LandingPage />}
+  </div>);
 }
 
 

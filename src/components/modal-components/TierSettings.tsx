@@ -15,7 +15,31 @@ import { add_Tier, changeProperty_Tier, delete_Tier } from "../../../services/fi
 import { TierSettings__Props } from "../../../types/Types";
 import { ChangeableInput } from "../ChangeableInput";
 
+function BillingButton() {
+    const openBillingPortal = () => {
+        window.location.href =
+            'https://billing.stripe.com/p/login/28E00j8WE0Oy3D03i5fEk00';
+    };
 
+    return (
+        <button className="
+    inline-flex items-center justify-center
+    rounded-lg px-5 py-2.5
+    text-sm font-medium
+    text-[#2b1a14]
+    bg-[#f3dfc2]
+    border border-[#8f7655]
+    shadow-sm
+    transition-all duration-200 ease-out
+    hover:bg-[#edd3ae]
+    hover:shadow-md
+    active:scale-[0.98]
+    focus:outline-none focus:ring-2 focus:ring-[#c4a484] focus:ring-offset-2
+    " onClick={openBillingPortal}>
+            Manage Subscription
+        </button>
+    );
+}
 
 const TierSettings = (props: TierSettings__Props) => {
     const dispatch = useDispatch();
@@ -57,6 +81,9 @@ const TierSettings = (props: TierSettings__Props) => {
     if (props.settings && Object.hasOwn(props.settings, "tiersTime")) {
         return (
             <div>
+                <div>
+                    <BillingButton />
+                </div>
                 {Array.isArray(props.settings?.tiersTime) && props.settings.tiersTime.map((tier) => {
                     const [selectedTimeFrame, setSelectedTimeFrame] = useState(tier.timeFrame)
 

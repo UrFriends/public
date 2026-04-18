@@ -26,10 +26,46 @@ const ContactSettings = (props: ContactSettings__Props) => {
   const changePersonMutation = useMutation({
     mutationFn: async (variables: { changeQualifier: string | number, keyToChange: string | number, change: string | number }) => {
       // changeQualifier is the phonebook entry's phonebook document ID
-      if (person && person.docID && variables.changeQualifier && variables.keyToChange && variables.change
+      if (person && person.id && variables.changeQualifier && variables.keyToChange && variables.change
         && typeof variables.changeQualifier == "string" && typeof variables.keyToChange == "string"
       ) {
-        await changeProperty_Contact(props.user?.uid, person.docID, variables.keyToChange, variables.change);
+        const callService = async () => {
+          try {
+            // const update_person = {
+            //   ...person
+            // }
+
+            let update_person = structuredClone(person)
+
+            if (variables.keyToChange == "name.first") {
+              update_person.name.first = variables.change as string
+            } else if (variables.keyToChange == "name.last") {
+              update_person.name.last = variables.change as string
+            } else {
+              const key = variables.keyToChange as keyof Person;
+              (update_person as any)[key] = variables.change;
+            }
+
+
+
+            const result = await changeProperty_Contact(update_person);
+            // if (!result) {
+            //dispatch a failure notifications
+            // console.log("ERROR with result in callService, NewPerson")
+            // return false;
+            // } else {
+            //update the store and the UI
+            //dispatch success notification
+            // dispatch(addContact(newPerson))
+            // console.log("TODO: establish notification service functionality for adding contact")
+            // return true;
+            // }
+          } catch (error) {
+            console.log(error, "ERROR callService in ContactSettings")
+            // return false;
+          }
+        }
+        callService();
         return true;
       } else {
         sendNotification(dispatch, { message: "Attempting to submit improperly formatted data", type: "red" });
@@ -67,9 +103,9 @@ const ContactSettings = (props: ContactSettings__Props) => {
         <h2>Contact Settings</h2>
 
         <p>First Name: </p>
-        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.first} valueSwitch={"first name"} />
+        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.first} valueSwitch={"name.first"} />
         <p>Last Name: </p>
-        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.last} valueSwitch={"last name"} />
+        <ChangeableInput mutation={changePersonMutation} valueProp={person.name.last} valueSwitch={"name.last"} />
         {person.email && typeof person.email == "string" && <>
           <p>Email: </p>
           <ChangeableInput mutation={changePersonMutation} valueProp={person.email} valueSwitch={"email"} />
@@ -103,7 +139,7 @@ const ContactSettings = (props: ContactSettings__Props) => {
         </>
       }
 
-      {person && person.docID && <div className="p-2">
+      {person && person.id && <div className="p-2">
         {!showConfirm && <Button variant="destructive" onClick={() => setShowConfirm(true)}>
           Delete {person?.name.first}
         </Button>}
@@ -113,14 +149,14 @@ const ContactSettings = (props: ContactSettings__Props) => {
 
 
 
-        {showConfirm && person && person.docID &&
+        {showConfirm && person && person.id &&
           <div className="mt-2">
             <p>
               You are about to delete all information and conversations for {person?.name.first}
             </p>
             <Button variant="destructive" onClick={() => {
-              if (props.user?.uid && person?.docID) {
-                delete_Contact(props.user.uid, person.docID, dispatch);
+              if (props.user?.uid && person?.id) {
+                delete_Contact(person.id, dispatch);
               } else {
                 sendNotification(dispatch, { message: "User ID or Contact ID missing", type: "red" });
               }

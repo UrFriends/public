@@ -1,16 +1,11 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "@firebase/app";
-import { Auth, getAuth } from "@firebase/auth";
-import { Firestore, getFirestore } from "@firebase/firestore";
-import Stripe from "stripe";
-import { DEV_API_KEY, SECRET_KEY } from "../../secrets";
+import { initializeAppCheck, ReCaptchaV3Provider } from "@firebase/app-check";
+import { getAuth } from "@firebase/auth";
+import { getFirestore } from "@firebase/firestore";
 
-
-const stripe = new Stripe(SECRET_KEY, {
-  apiVersion: "2025-08-27.basil",
-});
 
 const firebaseConfig = {
-  apiKey: DEV_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_STAGING_API_KEY,
   authDomain: "urfriends-beta.firebaseapp.com",
   projectId: "urfriends-beta",
   storageBucket: "urfriends-beta.firebasestorage.app",
@@ -19,14 +14,24 @@ const firebaseConfig = {
   measurementId: "G-Z6M9YQ15J8"
 };
 
-let app: FirebaseApp
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApp();
+const app: FirebaseApp = getApps().length
+  ? getApp()
+  : initializeApp(firebaseConfig);
+
+// 🔑 App Check
+// Only run App Check in the browser, and only once
+if (typeof window !== "undefined") {
+  if (!(window as any)._appCheckInitialized) {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
+    (window as any)._appCheckInitialized = true;
+  }
 }
 
-const auth: Auth = getAuth(app);
-const db: Firestore = getFirestore(app);
-
-export { app, auth, db, stripe };
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export { app };

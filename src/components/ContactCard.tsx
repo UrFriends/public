@@ -251,7 +251,7 @@ function ContactCard(props: ContactCard__Props) {
               {props.person.name.first + " " + props.person.name.last}
             </span>
             <span className="last-contact">
-              {(props.person.lastConvo && Object.keys(props.person.lastConvo).length === 0)
+              {(props.person.conversations && Object.keys(props.person.conversations).length === 0)
                 ? `Have a conversation with ${props.person.name.first + " " + props.person.name.last
                 }!`
                 : "Last Contact: "}
@@ -259,7 +259,7 @@ function ContactCard(props: ContactCard__Props) {
             </span>
           </div>
           <span className="last-convo-topic">
-            {(props.person.lastConvo && Object.keys(props.person.lastConvo).length === 0)
+            {(props.person.conversations && Object.keys(props.person.conversations).length === 0)
               ? null
               : "Topic: "}
             {(props.lastContact) && props.lastContact.topic

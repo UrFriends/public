@@ -2,23 +2,27 @@ import { sendNotification } from "@/hooks/sendNotification";
 import { db } from "@/lib/firebase";
 
 import {
-  addDoc,
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
-  query,
   updateDoc,
   writeBatch
 } from "@firebase/firestore";
+import { getFunctions, httpsCallable } from "@firebase/functions";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Conversation, Person, tiersTime_Object } from "../types/Types";
+
+const functions = getFunctions();
+const service_contacts = httpsCallable(functions, "service_contacts");
+const service_conversations = httpsCallable(functions, "service_conversations");
+const service_accounts = httpsCallable(functions, "service_accounts");
+
 
 export const check_if_user_has_DB = async (arg1: string | undefined) => {
   if (typeof arg1 == "string") {
     try {
-      const users_account_info = doc(db, "user_info", arg1);
+      const users_account_info = doc(db, "user_info_public", arg1);
       const userAccount = await getDoc(users_account_info);
       if (userAccount.exists()) {
         //the user has an account
@@ -39,25 +43,16 @@ export const add_Conversation = async (UserID: string, person: Person, conversat
 ) => {
   if (person) {
     try {
-      const users_account_info = doc(db, "user_info", UserID);
-      const phonebookRef = collection(users_account_info, "phonebook");
-      const contactRef = doc(phonebookRef, person.docID);
-      const lastConvoRef = collection(contactRef, "lastConvo");
-      // Check to see if we are deleting the original placeholder null conversation
-      // OR if user created conversation(s) are already present
-      if (person && conversation) {
-        await addDoc(lastConvoRef, conversation).then(() => {
-          sendNotification(dispatch, { type: "green", message: "The conversation was successfully added" })
-        }).catch((error) => {
-          console.log(error, "ERROR add_Conversation: There was an error adding the document")
-          sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error adding the document" })
-        })
-      } else {
-        sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: The data was improperly formatted" })
-      }
-    } catch (e) {
-      console.error("ERROR add_Conversation: adding document: ", e);
-      sendNotification(dispatch, { type: "red", message: "ERROR add_Conversation: There was an error locating your user information" })
+      const result = await service_conversations({
+        userId: UserID,
+        action: "conversations-add",
+        payload: {
+          contactId: person.id,
+          conversation
+        }
+      });
+    } catch (err) {
+      console.error("ERROR add_Conversations FE", err)
     }
   }
 };
@@ -69,155 +64,207 @@ export const changeProperty_Conversation = async (
   dispatch: Dispatch<UnknownAction>
 ) => {
   //change a given property on a contact
+
+  if (person) {
     try {
-      const users_account_info = doc(db, "user_info", UserID);
-      const phonebookRef = collection(users_account_info, "phonebook");
-      const contactRef = doc(phonebookRef, person.docID);
-      const lastConvoRef = collection(contactRef, "lastConvo");
-      const conversationRef = doc(lastConvoRef, conversation.DocID)
-
-      const changeProperty = async () => {
-        try {
-          await updateDoc(conversationRef, {
-            topic: conversation.topic,
-            date: conversation.date
-          })
-          sendNotification(dispatch, { message: "Conversation property change successful", type: "green" })
-        } catch (err) {
-          console.error(err, "ERROR fireBaseServices changeProperty_Conversation: failed to change property");
-          sendNotification(dispatch, { message: "ERROR fireBaseServices changeProperty_Conversation: failed to change property", type: "red" })
+      const result = await service_conversations({
+        userId: UserID,
+        action: "conversations-update",
+        payload: {
+          contactId: person.id,
+          conversationId: conversation.id,
+          conversation
         }
-      };
-      changeProperty();
-
-
-    } catch (error) {
-      console.log(error, "ERROR fireBaseServices changeProperty_Conversation: firebase failure")
-
+      });
+    } catch (err) {
+      console.error("ERROR changeProperty_Conversation FE", err)
     }
+  }
+
+  // try {
+  //   const users_account_info = doc(db, "user_info_public", UserID);
+  //   const phonebookRef = collection(users_account_info, "phonebook");
+  //   const contactRef = doc(phonebookRef, person.docID);
+  //   const conversations_Ref = collection(contactRef, "conversations");
+  //   const conversationToChange_Ref = doc(conversations_Ref, conversation.DocID)
+
+  //   const changeProperty = async () => {
+  //     try {
+  //       await updateDoc(conversationToChange_Ref, {
+  //         topic: conversation.topic,
+  //         date: conversation.date
+  //       })
+  //       sendNotification(dispatch, { message: "Conversation property change successful", type: "green" })
+  //     } catch (err) {
+  //       console.error(err, "ERROR fireBaseServices changeProperty_Conversation: failed to change property");
+  //       sendNotification(dispatch, { message: "ERROR fireBaseServices changeProperty_Conversation: failed to change property", type: "red" })
+  //     }
+  //   };
+  //   changeProperty();
+
+
+  // } catch (error) {
+  //   console.log(error, "ERROR fireBaseServices changeProperty_Conversation: firebase failure")
+
+  // }
 
 };
 
 export const delete_Conversation = async (UserID: string, person: Person, conversation_ID: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a conversation
-  try {
-    const users_account_info = doc(db, "user_info", UserID);
-    const phonebookRef = collection(users_account_info, "phonebook");
-    const contactRef = doc(phonebookRef, person.docID);
-    const lastConvoRef = collection(contactRef, "lastConvo");
-    const conversationRef = doc(lastConvoRef, conversation_ID)
 
-    const performDelete = async () => {
-      try {
-        await deleteDoc(conversationRef).then(() => {
-          //indicate success
-          sendNotification(dispatch, { message: "Conversation successfully deleted", type: "green" })
-        }).catch((error) => {
-          console.log(error, "ERROR firebaseServices delete_Conversation: deleting conversation")
-          sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: conversation deletion failed", type: "red" })
-        });
-      } catch (err) {
-        console.error(err);
-        sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: conversation deletion failed", type: "red" })
-      }
-    };
-    performDelete();
-  } catch (error) {
-    console.log(error,)
-    sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: firebase failure", type: "red" })
+  if (person) {
+    try {
+      const result = await service_conversations({
+        userId: UserID,
+        action: "conversations-update",
+        payload: {
+          contactId: person.id,
+          conversationId: conversation_ID
+        }
+      });
+    } catch (err) {
+      console.error("ERROR delete_Conversation FE", err)
+    }
   }
+
+  // try {
+  //   const users_account_info = doc(db, "user_info_public", UserID);
+  //   const phonebookRef = collection(users_account_info, "phonebook");
+  //   const contactRef = doc(phonebookRef, person.docID);
+  //   const conversations_Ref = collection(contactRef, "conversations");
+  //   const conversationToDelete_Ref = doc(conversations_Ref, conversation_ID)
+
+  //   const performDelete = async () => {
+  //     try {
+  //       await deleteDoc(conversationToDelete_Ref).then(() => {
+  //         //indicate success
+  //         sendNotification(dispatch, { message: "Conversation successfully deleted", type: "green" })
+  //       }).catch((error) => {
+  //         console.log(error, "ERROR firebaseServices delete_Conversation: deleting conversation")
+  //         sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: conversation deletion failed", type: "red" })
+  //       });
+  //     } catch (err) {
+  //       console.error(err);
+  //       sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: conversation deletion failed", type: "red" })
+  //     }
+  //   };
+  //   performDelete();
+  // } catch (error) {
+  //   console.log(error,)
+  //   sendNotification(dispatch, { message: "ERROR firebaseServices delete_Conversation: firebase failure", type: "red" })
+  // }
 };
 // (close) Conversation services
 
 // Contact services
-export const add_Contact = async (UserID: string, person: Person) => {
+export const add_Contact = async (person: Person) => {
   //add a contact to someone's phonebook
-  try {
-    const users_account_info = doc(db, "user_info", UserID);
-    const phonebookRef = collection(users_account_info, "phonebook");
-    const add_Document = await addDoc(phonebookRef, person);
 
-    if (add_Document) {
-      //reload page
-      location.reload();
-      return true;
-    } else {
-      console.log("ERROR: add_Contact firebaseServices Adding document");
-      return false;
+  if (person) {
+    try {
+      const result = await service_contacts({
+        action: "contacts-add",
+        payload: {
+          contact: person
+        }
+      });
+    } catch (err) {
+      console.error("ERROR delete_Conversation FE", err)
     }
-  } catch {
-    console.log("ERROR: add_Contact firebaseServices");
-    return false;
   }
+
+  // try {
+  //   const users_account_info = doc(db, "user_info_public", UserID);
+  //   const phonebookRef = collection(users_account_info, "phonebook");
+  //   const add_Document = await addDoc(phonebookRef, person);
+
+  //   if (add_Document) {
+  //     //reload page
+  //     location.reload();
+  //     return true;
+  //   } else {
+  //     console.log("ERROR: add_Contact firebaseServices Adding document");
+  //     return false;
+  //   }
+  // } catch {
+  //   console.log("ERROR: add_Contact firebaseServices");
+  //   return false;
+  // }
 };
 
 export const changeProperty_Contact = async (
-  UserID: string,
-  changeQualifier: string,
-  propertyToChange: string,
-  change: string | number | readonly string[]
+  data: Person
 ) => {
-  //change a contact's properties
-  //changeQualifier is the phonebook entr
-  // y's phonebook document ID
-  const changeContact = async () => {
-    try {
-      const contactToChangeRef = doc(db, "user_info", UserID, "phonebook", changeQualifier);
-      if (propertyToChange == "first name") {
-        //first name is a nested property in the name property
-        await updateDoc(contactToChangeRef, {
-          "name.first": change
-        })
-      } else if (propertyToChange == "last name") {
-        //last name is a nested property in the name property
-        await updateDoc(contactToChangeRef, {
-          "name.last": change
-        })
-      } else {
-        await updateDoc(contactToChangeRef, {
-          [propertyToChange]: change
-        })
+
+  let change_data = structuredClone(data);
+
+  try {
+    const result = await service_contacts({
+      action: "contacts-update",
+      payload: {
+        contactId: data.id,
+        data: change_data
       }
-    } catch (err) {
-      console.error("ERROR changeProperty_Contact: changing a contact property in fireBaseServices", err);
+    });
+
+    if (result) {
+      return true;
     }
-  };
-  changeContact();
-  return true;
+  } catch (err) {
+    return false;
+  }
+
+  // //change a contact's properties
+  // //changeQualifier is the phonebook entr
+  // // y's phonebook document ID
+  // // const changeContact = async () => {
+  // //   try {
+  // //     const contactToChangeRef = doc(db, "user_info_public", UserID, "phonebook", changeQualifier);
+  // //     if (propertyToChange == "first name") {
+  // //       //first name is a nested property in the name property
+  // //       await updateDoc(contactToChangeRef, {
+  // //         "name.first": change
+  // //       })
+  // //     } else if (propertyToChange == "last name") {
+  // //       //last name is a nested property in the name property
+  // //       await updateDoc(contactToChangeRef, {
+  // //         "name.last": change
+  // //       })
+  // //     } else {
+  // //       await updateDoc(contactToChangeRef, {
+  // //         [propertyToChange]: change
+  // //       })
+  // //     }
+  // //   } catch (err) {
+  // //     console.error("ERROR changeProperty_Contact: changing a contact property in fireBaseServices", err);
+  // //   }
+  // // };
+  // // changeContact();
+  // return true;
 };
 
-export const delete_Contact = async (UserID: string, contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
+export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a contact
+
   try {
-    const contactToDelete = doc(db, "user_info", UserID, "phonebook", contact_docID);
     const performDelete = async () => {
-
-      const delete_conversation_subCollection = async () => {
-        try {
-          const conversationsToDelete = collection(db, "user_info", UserID, "phonebook", contact_docID, "lastConvo")
-          const q = query(conversationsToDelete);
-          const querySnapshot = await getDocs(q)
-          const deletePromises: Promise<void>[] = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            deletePromises.push(deleteDoc(doc(db, "user_info", UserID, "phonebook", contact_docID, documentSnapshot.id)));
-          });
-          await Promise.all(deletePromises);
-          console.log("All documents in the subcollection deleted successfully.");
-        } catch (error) {
-          console.log(error, )
-        }
-      }
-      delete_conversation_subCollection();
-
       try {
-        console.log("TODO: add Document ID for the subcollection of LastConvo")
-        // the lastConvo subcollection will need to have each document individually deleted
-        await deleteDoc(contactToDelete).then(() => {
-          location.reload();
+
+        const result = await service_contacts({
+          action: "contacts-delete",
+          payload: {
+            contact_docID
+          }
         });
+
+        if (result) {
+          return true;
+        }
+
       } catch (error) {
-        console.log("ERROR delete_Contact performDelete failure to delete Contact")
         sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+        return false;
       }
     }
     performDelete();
@@ -226,6 +273,29 @@ export const delete_Contact = async (UserID: string, contact_docID: string, disp
     console.log("ERROR delete_Contact service error ")
     sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
   }
+
+
+
+  // try {
+  //   const contactToDelete = doc(db, "user_info_public", UserID, "phonebook", contact_docID);
+  //   const performDelete = async () => {
+  //     try {
+  //       console.log("TODO: add Document ID for the subcollection of conversations")
+  //       // the conversations subcollection will need to have each document individually deleted
+  //       await deleteDoc(contactToDelete).then(() => {
+  //         location.reload();
+  //       });
+  //     } catch (error) {
+  //       console.log("ERROR delete_Contact performDelete failure to delete Contact")
+  //       sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+  //     }
+  //   }
+  //   performDelete();
+  //   sendNotification(dispatch, { type: "green", message: "Contact successfully deleted" })
+  // } catch (error) {
+  //   console.log("ERROR delete_Contact service error ")
+  //   sendNotification(dispatch, { type: "red", message: "Error deleting the contact" })
+  // }
 };
 // (close) Contact services
 
@@ -242,7 +312,7 @@ export const add_Tier = async (
     add_Tier
     const perform_AddTier = async () => {
       try {
-        const users_account_info = doc(db, "user_info", UserID);
+        const users_account_info = doc(db, "user_info_public", UserID);
         const userData = await getDoc(users_account_info);
         if (userData.data()) {
           let setting_Data = {
@@ -303,7 +373,7 @@ export const changeProperty_Tier = async (
 ) => {
   const change_Tier = async () => {
     try {
-      const users_account_info = doc(db, "user_info", UserID);
+      const users_account_info = doc(db, "user_info_public", UserID);
       const userData = await getDoc(users_account_info);
       if (userData.data()) {
         let newTiers_Data = {
@@ -368,7 +438,7 @@ export const changeProperty_Tier = async (
 
 export const delete_Tier = async (UserID: string, tierName: string, dispatch: Dispatch<UnknownAction>) => {
   try {
-    const users_account_info = doc(db, "user_info", UserID);
+    const users_account_info = doc(db, "user_info_public", UserID);
     const userData = await getDoc(users_account_info);
     if (userData.data()) {
       const data = userData.data();

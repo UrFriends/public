@@ -19,18 +19,17 @@ export interface Person {
   user?: string;
   tier?: number | string;
   phoneNumber?: number | string;
-  lastConvo?: Record<string, Conversation>
-  docID?: string;
+  conversations?: Record<string, Conversation>
   email?: string;
 }
 
 export type ISODateString = string;
 
 export interface Conversation {
-    date: ISODateString | null;
-    topic: string | null;
-    DocID?: string;
-  }
+  date: ISODateString | null;
+  topic: string | null;
+  id?: string;
+}
 
 export interface Modal__Props {
   data?: any;
@@ -56,7 +55,8 @@ export interface ContactSettings__Props {
 
 export interface HeaderComponent__Props {
   displayName?: string | undefined | null,
-  logout: () => Promise<void>
+  logout: () => Promise<void>,
+  data?: { settings: any; phonebook: { [key: string]: any[]; }; }
 }
 
 export interface ModifyDataButton__Props {

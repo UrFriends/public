@@ -1,6 +1,6 @@
 {
   "apphosting": {
-    "backendId": "count-backend",
+    "backendId": "public",
     "rootDir": "/",
     "ignore": [
       "node_modules",
@@ -8,7 +8,8 @@
       "firebase-debug.log",
       "firebase-debug.*.log",
       "functions"
-    ]
+    ],
+    "alwaysDeployFromSource": true
   },
   "emulators": {
     "apphosting": {
@@ -21,5 +22,4 @@
     },
     "singleProjectMode": true
   }
-  
 }
