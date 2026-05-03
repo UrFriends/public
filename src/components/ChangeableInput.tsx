@@ -48,6 +48,7 @@ export const ChangeableInput = (props: ChangeableInput__Props) => {
   }
   const style_var = "flex"
   const style_var_3 = "inline-block w-16 mr-4 "
+  
 
   return (
     <div className="">
