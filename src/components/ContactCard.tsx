@@ -68,16 +68,28 @@ const ScheduleIcon_2 = () => {
 
 //static
 const ActionButton = (props: any) => {
+  const isDisabled = Boolean(props.disabled);
+
+  const handleClick = (event: any) => {
+    if (isDisabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    props.handleModalOpen(event, {
+      modalContentType: props.message,
+      person: props.person,
+    });
+  };
+
   return (
     <>
       <button
-        onClick={(event) =>
-          props.handleModalOpen(event, {
-            modalContentType: props.message,
-            person: props.person,
-          })
-        }
-        className="action-button flex flex-row p-2"
+        onClick={handleClick}
+        disabled={isDisabled}
+        className="action-button flex flex-row p-2 transition-opacity"
+        style={{ opacity: isDisabled ? 0.5 : 1, cursor: isDisabled ? "not-allowed" : "pointer" }}
       >
         <div className=" rounded-full w-20 h-16 flex items-center justify-center">
           <MiniIconWrapper>{props.icon}</MiniIconWrapper>
@@ -189,6 +201,7 @@ function ContactCard(props: ContactCard__Props) {
                 handleModalOpen={handleModalOpen}
                 message={"convo-starters"}
                 person={props.person}
+                disabled
               >
                 Convo Starters
               </ActionButton>
@@ -200,6 +213,7 @@ function ContactCard(props: ContactCard__Props) {
                 handleModalOpen={handleModalOpen}
                 message={`schedule-conv-w-${props.person.name.first}`}
                 person={props.person}
+                disabled
               >
                 Schedule Convo
               </ActionButton>
@@ -274,8 +288,9 @@ function ContactCard(props: ContactCard__Props) {
                   person: props.person,
                 })
               }
-              className="schedule-btn flex justify-center items-center"
+              className="schedule-btn flex justify-center items-center opacity-50 cursor-not-allowed"
               title={`Schedule A Conversation With ${props.person.name.first}`}
+              disabled
             >
               <ScheduleIcon_2 />
             </button>
