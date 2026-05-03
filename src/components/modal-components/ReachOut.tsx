@@ -29,16 +29,19 @@ const ReachOut = (props: ReachOut__Props) => {
       //TODO: fix this bug; date/time parsing is trouble currently
       //converts date to UTC String
       console.log("TODO: fix this bug; date/time parsing is trouble currently")
-      var calendarDate = new Date(
-        new Date(date).getTime() + 60 * 60 * 1000
-      ).toUTCString();
+      const calendarDate = form.date.value; // YYYY-MM-DD
+
+      if (!calendarDate) {
+        sendNotification(dispatch, { message: "the date is invalid", type: "red" });
+        return;
+      }
 
       const topic = form.conversation.value;
 
       const newConvo = {
-        topic: topic,
-        date: calendarDate
-      }
+        topic,
+        date: calendarDate,
+      };
 
       try {
         await add_Conversation(props.user.uid, person, newConvo, dispatch).then(() => {

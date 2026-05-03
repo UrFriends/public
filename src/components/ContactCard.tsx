@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { GearWheelIcon } from "@/components/icons/gearWheel-icon";
 import { PersonIcon } from "@/components/icons/person-icon";
 import RecentConversations from "@/components/RecentConversations";
-import { getDateFromDateTime } from "@/hooks/getDateFromDateTime";
+import { getDateFromDateTime, parseDate } from "@/hooks/getDateFromDateTime";
 import { ContactCard__Props } from "../../types/Types";
 import { setVisibleModal } from "./features/modalSlice";
 
@@ -16,6 +16,8 @@ const MiniIconWrapper = (props: any) => {
     </div>
   )
 }
+
+
 
 //static; icon passed to ActionButton as props
 const ContactSettingsIcon = () => {
@@ -91,16 +93,12 @@ const ActionButton = (props: any) => {
 
 //static; shows if user has reached out to contact within Tier's timeframe
 const ContactStatusIndicator = (props: any) => {
-  const date1 = new Date(props.windowOfLastContact);
-  const date2 = new Date(props.lastContact);
+const date1 = parseDate(props.windowOfLastContact);
+const date2 = parseDate(props.lastContact);
 
   //if contact has no conversations, or their latest conversation
   //is outside of the tier's timeframe
-  if (
-    props.windowOfLastContact === null ||
-    props.lastContact === null ||
-    date1 > date2 || (props.windowOfLastContact == "NaN/NaN/NaN" || props.lastContact == "")
-  ) {
+if (!date1 || !date2 || date1 > date2) { 
     return (
       <>
         <svg fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -111,7 +109,8 @@ const ContactStatusIndicator = (props: any) => {
   }
 
   //if latest conversation is within the tier's timeframe
-  if (date1 < date2) {
+
+if (date1 < date2) {
     return (
       <>
         <svg fill="green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">

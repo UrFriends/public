@@ -1,18 +1,35 @@
-//takes date property from 'conversations' objects and returns a simplified date string
 export function getDateFromDateTime(dateTimeString: string) {
+  if (!dateTimeString) return "";
 
-    // Create a Date object from the string
-    const date = new Date(dateTimeString);
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const day = date.getDate() + 1;
-
-    if (`${month}/${day}/${year}` == "NaN/NaN/NaN") {
-        return "";
-    }
-
+  // Handle "YYYY-MM-DD" safely (your new format)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateTimeString)) {
+    const [year, month, day] = dateTimeString.split("-").map(Number);
     return `${month}/${day}/${year}`;
+  }
+
+  // Fallback for old stored UTC strings
+  const date = new Date(dateTimeString);
+
+  if (isNaN(date.getTime())) return "";
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate(); // ✅ FIXED (no +1)
+  const year = date.getFullYear();
+
+  return `${month}/${day}/${year}`;
 }
+
+export const parseDate = (d: string | null) => {
+  if (!d) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [year, month, day] = d.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+
+  const parsed = new Date(d);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
 
 export const dayChoices = ["1d", "2d", "3d", "4d", "5d", "6d", "1w", "2w", "3w", "1m", "2m", "3m", "4m", "5m", "6m", "u"]
 
