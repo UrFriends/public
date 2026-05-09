@@ -58,12 +58,12 @@ This Next.js 15 app powers both the UrFriends marketing site and the authenticat
 - Side effects include: notifications, modals, external API requests (Stripe, Firebase cloud functions).
 
 ### TODO / Repo Map
-- [ ] Create `REPO_MAP.md` breaking down marketing vs dashboard code, detailing `services/fireBaseServices` helpers, listing each Redux slice and its consumers.
-- `src/app/page.tsx` – landing + dashboard entry point
-- `src/context/auth-context.tsx` – Firebase Auth provider
-- `src/components/**` – shadcn + custom UI (Phonebook, Tier, Modal, etc.)
-- `src/app/api/stripe/*` – Next API routes for Stripe
+- `src/context/auth-context.tsx` – Firebase Auth provider (For Microsoft, Apple, Standard Auth)
 - `src/services/**` – Firestore + Stripe helper functions
+- Edit tier name functionality
+- Edit tier notificaiton timeframe functionality
+- Fix TierSettings.tsx styling
+- Stop greyed out ActionButton components from floating over Modal
 
 ## Quick Start
 ```bash
