@@ -60,6 +60,8 @@ This Next.js 15 app powers both the UrFriends marketing site and the authenticat
 ### TODO / Repo Map
 - `src/context/auth-context.tsx` – Firebase Auth provider (For Microsoft, Apple, Standard Auth)
 - `src/services/**` – Firestore + Stripe helper functions
+- Delete conversations
+- Notifications for all successful/failed service interactions
 - Edit tier name functionality
 - Edit tier notificaiton timeframe functionality
 - Fix TierSettings.tsx styling
