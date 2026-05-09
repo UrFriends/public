@@ -344,7 +344,12 @@ function DashboardView() {
         <Notification />
         <Modal user={user} data={data} />
         <RandomButtonBar />
+<<<<<<< HEAD
 
+=======
+        {/* {!data.subscription.active && <Button onClick={() => router.push("/subscribe")}>Subscribe</Button>} */}
+        {/* {data.subscription.active && <div>You are a subscriber!</div>} */}
+>>>>>>> a4b5cda9fc54350d99452a8d9fe8aff76e6b0bb6
         <p></p>
         <LinkBar />
 

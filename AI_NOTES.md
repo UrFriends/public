@@ -1,9 +1,9 @@
 # Instructions for the Next AI Pass
 
-The UrFriends repo is a Next.js 15 (App Router) project that combines a marketing site, authenticated dashboard, Firebase backend, and Stripe billing hooks. This is the first time we’ve exposed it to an AI agent, so treat the stack with care—no unapproved mutations against production data.
+The UrFriends repo is a Next.js 15 (App Router) SaaS project that's designed for building relationships, has an authenticated dashboard, Firebase backend, and Stripe billing hooks. There are other repositories for microservices that support the hosted beta. The staging branch is where the hosted beta is published from. This is the first time we’ve exposed it to an AI agent, so treat the stack with care—no unapproved mutations against production data.
 
 ## Branch Policy
-- Default branch is `main`; there’s also a `staging` branch but no entrenched long-lived branches. Coordinate with Jay before creating new ones.
+- Default branch is `main`; but there’s also a `staging` branch--which is where the main app is published to--but no entrenched long-lived branches. Coordinate with Jay before creating new ones.
 - Deployments come from the Next.js build pipeline (`next build` → self-host). There’s no GitHub Pages mirror here.
 - **Secrets are not in git.** `src/lib/firebase.ts` imports `DEV_API_KEY` and `SECRET_KEY` from `../../secrets`, and `/app/api/stripe` expects `process.env.SECRET_KEY`. Keep keys in a local `secrets.ts` or `.env.local`, never in the repo.
 
@@ -19,7 +19,7 @@ The UrFriends repo is a Next.js 15 (App Router) project that combines a marketin
   - Stripe helpers are in `services/stripe.ts`; server-side Stripe calls happen in `src/app/api/stripe/*` with the Node SDK.
   - Firestore CRUD helpers for contacts, conversations, tiers live in `services/fireBaseServices.ts`.
 - **UI system:** Tailwind + shadcn/ui. `components.json` configures the shadcn generator. Custom components (Phonebook, Modal, RandomButtonBar, etc.) are under `src/components/`.
-- **Genkit / AI hooks:** `src/ai/genkit.ts` registers `@genkit-ai/googleai` with `googleai/gemini-2.0-flash`. `src/ai/dev.ts` is a placeholder for running Genkit flows with `npm run genkit:dev`.
+- **Genkit / AI hooks:** (This is provided directly by Jay, the rest is AI generated: I added this because in the future I want to add AI tools, but that's probably a long way away) `src/ai/genkit.ts` registers `@genkit-ai/googleai` with `googleai/gemini-2.0-flash`. `src/ai/dev.ts` is a placeholder for running Genkit flows with `npm run genkit:dev`.
 - **Types:** Centralized in `types/Types.ts` for contacts, conversations, tiers, component props.
 - **Hosting config:** `firebase.json`, `apphosting.yaml`, etc., are present for future Firebase Hosting/App Hosting setups—coordinate before editing.
 
