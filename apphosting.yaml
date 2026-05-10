@@ -18,4 +18,7 @@ env:
     secret: projects/45619187767/secrets/NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
   - variable: NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL
-    secret: projects/45619187767/secrets/NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL
+    value: "https://create-user-acct-proxy-45619187767.us-central1.run.app"
+    availability:
+      - BUILD
+      - RUNTIME
