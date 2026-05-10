@@ -24,9 +24,8 @@ export async function createUserAccount(): Promise<void> {
 
   console.log("The body is: ", body)
 
-  const response = await fetch(
-    "https://create-user-acct-proxy-45619187767.us-south1.run.app", body
-  );
+  const url = (import.meta as any).env?.NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL;
+  const response = await fetch(url, body);
 
   if (!response.ok) {
     const text = await response.text();
