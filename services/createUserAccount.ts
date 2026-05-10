@@ -25,13 +25,13 @@ export async function createUserAccount(): Promise<void> {
   console.log("The body is: ", body)
 
   const response = await fetch(
-    "https://us-central1-urfriends-beta.cloudfunctions.net/createUserAccountProxy", body
+    "https://create-user-acct-proxy-45619187767.us-south1.run.app", body
   );
 
   if (!response.ok) {
     const text = await response.text();
     throw new Error(
-      `createUserAccountProxy failed: ${response.status} ${text}`
+      `create-user-acct-proxy failed: ${response.status} ${text}`
     );
   }
 }
