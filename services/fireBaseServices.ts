@@ -244,7 +244,7 @@ export const changeProperty_Contact = async (
   // return true;
 };
 
-export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<UnknownAction>) => {
+export const delete_Contact = async (contactId: string, dispatch: Dispatch<UnknownAction>) => {
   //delete a contact
 
   try {
@@ -254,7 +254,7 @@ export const delete_Contact = async (contact_docID: string, dispatch: Dispatch<U
         const result = await service_contacts({
           action: "contacts-delete",
           payload: {
-            contact_docID
+            contactId
           }
         });
 
