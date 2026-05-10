@@ -15,17 +15,24 @@ export async function createUserAccount(): Promise<void> {
 
   const idToken = await user.getIdToken(true);
 
-  const body = {
+  const url = process.env.NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL;
+
+  console.log("CREATE USER PROXY URL:", url);
+
+  if (!url) {
+    throw new Error("NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL is missing.");
+  }
+
+  const requestOptions: RequestInit = {
     method: "POST",
     headers: {
       Authorization: `Bearer ${idToken}`,
     },
-  }
+  };
 
-  console.log("The body is: ", body)
+  console.log("The request options are:", requestOptions);
 
-  const url = (import.meta as any).env?.NEXT_PUBLIC_CREATE_USER_ACCT_PROXY_URL;
-  const response = await fetch(url, body);
+  const response = await fetch(url, requestOptions);
 
   if (!response.ok) {
     const text = await response.text();
