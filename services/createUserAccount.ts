@@ -9,6 +9,8 @@ export async function createUserAccount(): Promise<void> {
   const auth = getAuth();
   const user = auth.currentUser;
 
+  console.log("CURRENT USER:", user);
+
   if (!user) {
     throw new Error("User must be authenticated to create an account.");
   }

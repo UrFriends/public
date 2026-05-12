@@ -34,6 +34,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Conversation, HeaderComponent__Props, Person, tiersTime_Object } from "../../types/Types";
 import RandomButtonBar from "../components/RandomButtonBar";
+// @ts-ignore: side-effect import for global CSS without type declarations
 import "../index.css";
 
 // Example usage in DashboardView or LandingPage
