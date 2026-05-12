@@ -180,21 +180,6 @@ function DashboardView() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    if (loading || !user?.uid) return;
-
-    const checkForNewUser = async () => {
-      const hasDB = await check_if_user_has_DB(user.uid);
-      if (!hasDB) {
-        await createUserAccount();
-      }
-    };
-
-    // DELETE LOG
-    console.log("USE_EFFECT")
-
-    checkForNewUser();
-  }, [loading, user?.uid]);
 
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ['userData', user?.uid],
@@ -208,8 +193,18 @@ function DashboardView() {
         let organized_phonebook: { [key: string]: any[] } = {};
 
         const locate_user = doc(db, "user_info_public", user.uid);
-        const accountData = await getDoc(locate_user);
-        if (!accountData.exists()) return null;
+
+        let accountData = await getDoc(locate_user);
+
+        if (!accountData.exists()) {
+          await createUserAccount();
+
+          accountData = await getDoc(locate_user);
+
+          if (!accountData.exists()) {
+            throw new Error("Account was created but user document was not found.");
+          }
+        }
 
         const phonebook = collection(locate_user, "phonebook");
         const phonebookEntriesSnap = await getDocs(phonebook);
@@ -308,36 +303,20 @@ function DashboardView() {
     enabled: !!user?.uid, // This ensures the query only runs when the user's UID is available
   });
 
-  if (!data) {
-    return (
-      <>There is an error fetching the user data
-        <Button variant="ghost" size="icon" onClick={logout} aria-label="Logout">
-          <LogOut className="h-s5 w-5" />
-        </Button></>
-    )
-  } else {
+    if (isPending || isFetching) {
+      return <>Loading user data...</>;
+    }
+
+    if (error) {
+      return <>There is an error fetching the user data</>;
+    }
+
+    if (!data) {
+      return <>No user data found</>;
+    }
+  
     console.log("The data in dashboard ", data)
-  }
-
-  // if (isPending) {
-  //   console.log(isPending, "data55")
-  // } else {
-  //   console.log("PEND", "PEND")
-  // }
-
-  // if (error) {
-  //   console.log(error.message, "data55")
-  // } else {
-  //   console.log("ERROR", "ERROR")
-  // }
-
-  // if (isFetching) {
-  //   console.log(isFetching.valueOf(), "data55")
-  // } else {
-  //   console.log("FETCH", "FETCH")
-  // }
-
-
+    
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <HeaderComponent displayName={user?.displayName} logout={logout} data={data} />
