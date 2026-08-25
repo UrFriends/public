@@ -7,7 +7,7 @@ not deployed, and is not authoritative for current behavior or configuration.
 
 ## Rules
 
-- Use `urhumans_web` for active client implementation.
+- Use `urhumans_frontend` for active client implementation.
 - Use `urhumans_backend` for current APIs and privileged services.
 - Treat this repository only as historical evidence or a source of explicitly
   selected product ideas.

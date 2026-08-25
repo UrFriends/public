@@ -1,7 +1,7 @@
 # UrFriends Web App (`public`)
 
 > **LEGACY / ARCHIVE SOURCE — NOT THE ACTIVE APPLICATION.** Selected MVP
-> behavior from this repository has been migrated to `UrFriends/urhumans_web`.
+> behavior from this repository has been migrated to `UrFriends/urhumans_frontend`.
 > Backend authority lives in `UrFriends/urhumans_backend`. This repository is not
 > deployed, is not a configuration source, and must not be used to infer current
 > Firebase projects, security rules, API endpoints, or production behavior.
