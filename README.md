@@ -1,28 +1,37 @@
 # UrFriends Web App (`public`)
 
-This Next.js 15 app powers both the UrFriends marketing site and the authenticated dashboard.
+> **LEGACY / ARCHIVE SOURCE — NOT THE ACTIVE APPLICATION.** Selected MVP
+> behavior from this repository has been migrated to `UrFriends/urhumans_web`.
+> Backend authority lives in `UrFriends/urhumans_backend`. This repository is not
+> deployed, is not a configuration source, and must not be used to infer current
+> Firebase projects, security rules, API endpoints, or production behavior.
 
-## Purpose
+The material below documents the former Next.js application and is retained only
+for historical context and deferred product ideas.
+
+This Next.js 15 app formerly powered the UrFriends marketing site and authenticated dashboard.
+
+## Historical purpose
 - Provide the logged-in experience for web users (contacts, tiers, reminders)
 - Host the marketing/landing pages, pricing, and onboarding funnel
 
-## Used By
+## Historical consumers
 - End users via web browser
 - Internal QA agents verifying flows before mobile parity
 
-## Depends On
+## Historical dependencies
 - Firebase Auth + Firestore (`urfriends-beta`) configured via `.env.local` / `secrets.ts`
 - UrFriends backend APIs (`urhumans-api`, `create-user-acct-service`)
 - Stripe Checkout + Billing Portal endpoints
 
-## System Context
+## Historical system context
 - Users sign in with Google → Firebase Auth session
 - App fetches Firestore data directly (TanStack Query) and calls UrFriends APIs for writes
 - Stripe buttons hit `/api/stripe/*` routes that proxy to Stripe + `urfriends-stripe-webhooks`
 
 > TODO: add diagram snippet once the org-level draw.io exists.
 
-## Contracts
+## Historical contracts
 - `/api/stripe/checkout` proxy expects `{ email, priceId }`
 - `/api/stripe/webhook` handled via cloud functions (see repo)
 - Frontend expects Firestore collections: `user_info/{uid}`, `phonebook`, `lastConvo`
@@ -67,13 +76,15 @@ This Next.js 15 app powers both the UrFriends marketing site and the authenticat
 - Fix TierSettings.tsx styling
 - Stop greyed out ActionButton components from floating over Modal
 
-## Quick Start
+## Historical local start
 ```bash
 npm install
 npm run dev   # runs on http://localhost:9002
 npm run build && npm start
 ```
 Requires `.env.local` + `secrets.ts` (ignored) with Firebase + Stripe keys.
+
+Do not supply current staging or production credentials to this legacy client.
 
 ## Repo Map
 > TODO: add `REPO_MAP.md` detailing component groups (marketing, dashboard, features) for agents.

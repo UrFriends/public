@@ -1,5 +1,12 @@
 # Instructions for the Next AI Pass
 
+> **LEGACY / ARCHIVE WARNING:** Do not treat this repository as the active
+> urhumans application or use its configuration against live infrastructure.
+> Selected behavior has migrated to `urhumans_web`; current backend contracts and
+> privileged services live in `urhumans_backend`. The notes below describe the
+> former implementation and may contain obsolete projects, endpoints, data access
+> patterns, and deployment assumptions.
+
 The UrFriends repo is a Next.js 15 (App Router) SaaS project that's designed for building relationships, has an authenticated dashboard, Firebase backend, and Stripe billing hooks. There are other repositories for microservices that support the hosted beta. The staging branch is where the hosted beta is published from. This is the first time we’ve exposed it to an AI agent, so treat the stack with care—no unapproved mutations against production data.
 
 ## Branch Policy
