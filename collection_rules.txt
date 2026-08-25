@@ -1,3 +1,5 @@
+// LEGACY EXAMPLE ONLY. These are not the active urhumans Firestore rules.
+// Current client access is deny-all; privileged data access goes through urhumans_backend.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {

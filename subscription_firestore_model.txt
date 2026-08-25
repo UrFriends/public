@@ -1,5 +1,6 @@
+// LEGACY CONCEPT ONLY. This is not the current production billing schema.
 {
-  // 🔐 Identity (written once)
+  // Identity (written once)
   stripe: {
     customerId: "cus_...",
     subscriptionId: "sub_...",
@@ -7,7 +8,7 @@
     productId: "prod_..."
   },
 
-  // 💳 Billing state (mutable)
+  // Billing state (mutable)
   billing: {
     status: "pending" | "trialing" | "active" | "past_due" | "paused" | "canceled",
     currentPeriodEnd: Timestamp | null,
@@ -16,9 +17,8 @@
     updatedAt: Timestamp
   },
 
-  // 🚦 App-level entitlement (derived)
+  // App-level entitlement (derived)
   entitlements: {
     pro: boolean
   }
 }
-
